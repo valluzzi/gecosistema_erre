@@ -34,7 +34,7 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", R_LIBS_USER="",  verbose
             -  (es: print {"success":"true","data":5}  )
     """
 
-    command = """Rscript --vanilla "%s" """ % (command)
+    command = """Rscript --vanilla --verbose "%s" """ % (command)
     environ = os.environ
     if not "R_HOME" in environ:
         environ['R_HOME'] = ""
