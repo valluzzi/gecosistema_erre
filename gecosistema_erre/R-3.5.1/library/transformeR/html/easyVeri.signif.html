@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Identify points significantly different from a given ref...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for easyVeri.signif {transformeR}"><tr><td>easyVeri.signif {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Identify points significantly different from a given ref value</h2>
+
+<h3>Description</h3>
+
+<p>Two-tailed hypothesis testing for <span class="pkg">easyVerification</span> sigma outputs
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+easyVeri.signif(ref.mean, est.mean, sigma, cl = 0.95)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>ref.mean</code></td>
+<td>
+<p>Numeric of length one. Null hypothesis reference mean (e.g. 0.5 for AUC tests, 0 for skill scores)</p>
+</td></tr>
+<tr valign="top"><td><code>est.mean</code></td>
+<td>
+<p>easyVerification output matrix with scores/measures. This is the <code>cat[num]</code> element of the <code>veriApply</code> output</p>
+</td></tr>
+<tr valign="top"><td><code>sigma</code></td>
+<td>
+<p>Standard deviation of the estimated mean. This is the <code>cat[num].sigma</code> element of the <code>veriApply</code> output.</p>
+</td></tr>
+<tr valign="top"><td><code>cl</code></td>
+<td>
+<p>Confidence level. Default to 0.95</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A easyVerification-like binary matrix (1 significant / 0 non-significant).
+Ready to be passed to <code><a href="easyVeri2grid.html">easyVeri2grid</a></code> for climatological grid conversion, 
+and possibly to <code><a href="map.stippling.html">map.stippling</a></code> after that, to depict significant points in a verification map.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="easyVeri2grid.html">easyVeri2grid</a></code>, for conversion of verification matrices into climatological grids.
+Also, <code><a href="map.stippling.html">map.stippling</a></code>, to draw significant points on verification maps.
+</p>
+<p>Other easyVerification.bridges: <code><a href="easyVeri2grid.html">easyVeri2grid</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

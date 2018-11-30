@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Subset decadal forecast by initialization years</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for subsetDecadalForecast {transformeR}"><tr><td>subsetDecadalForecast {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Subset decadal forecast by initialization years</h2>
+
+<h3>Description</h3>
+
+<p>Subset decadal forecast by initialization years
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+subsetDecadalForecast(data, ly = c(1, 2))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>grid obtained from the output of function loadDecadalForecast.</p>
+</td></tr>
+<tr valign="top"><td><code>ly</code></td>
+<td>
+<p>Vector of integers indicating the lead years of initialization. 
+Default is ly = c(1,2) (the two years before).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A grid object with an additional dimension corresponding to the selected lead years.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>M. Iturbide
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

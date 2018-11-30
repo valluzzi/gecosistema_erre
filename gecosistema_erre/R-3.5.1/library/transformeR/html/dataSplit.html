@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Split data into two different sets.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dataSplit {transformeR}"><tr><td>dataSplit {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Split data into two different sets.</h2>
+
+<h3>Description</h3>
+
+<p>Split data into two different sets by a specific fraction. Splitting data is 
+normally used to obtain a train and a validation set.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dataSplit(x, y, f = 3/4, type = "random")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>The input grid object.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>The observations object.</p>
+</td></tr>
+<tr valign="top"><td><code>f</code></td>
+<td>
+<p>Could be a fraction, value between (0,1) indicating the fraction of the data that will define the train set, 
+or an integer indicating the number of folds. It can also be a list of folds indicating the years of each fold.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>A string, c(&quot;random&quot;,&quot;chronological&quot;), indicating if the splits should be random or in a chronological order. 
+Default is &quot;random&quot;.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list of folds containing the x and y splitted.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bano-Medina
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+x &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+y &lt;- VALUE_Iberia_pr
+### Split the data in train and test (f &lt; 1)###
+data.splitted &lt;- dataSplit(x,y,f = 3/4, type = "chronological")
+str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
+### Split the data in 3 folds ###
+data.splitted &lt;- dataSplit(x,y,f = 3, type = "chronological")
+str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[2]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
+data.splitted &lt;- dataSplit(x,y,f = 3, type = "random")
+str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[2]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
+data.splitted &lt;- dataSplit(x,y,type = "chronological", 
+                           f = list(c("1983","1984","1985","1986","1987",
+                                      "1988","1989","1990","1991"),
+                                    c("1992","1993","1994","1995","1996",
+                                      "1997","1998","1999"),
+                                    c("2000","2001","2002")))
+str(data.splitted[[1]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[1]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[2]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[2]]$test$y$Dates)  # 1 fold out of 3 for test
+str(data.splitted[[3]]$train$y$Dates) # 2 folds out of 3 for train  
+str(data.splitted[[3]]$test$y$Dates)  # 1 fold out of 3 for test
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

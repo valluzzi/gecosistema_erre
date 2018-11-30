@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get years as a factor</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getYearsAsINDEX {transformeR}"><tr><td>getYearsAsINDEX {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get years as a factor</h2>
+
+<h3>Description</h3>
+
+<p>Extract the year as a factor (e.g. for computing annual statistics)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getYearsAsINDEX(obj)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p>Any object extending the station or grid classes</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function performs a very basic operation, extracting the year element from the 
+dates previously converted to POSIXlt. The trick lies in the year-crossing seasons. For instance:
+by convention, winter 2001 encompasses December 2000 and January, February 2001. Therefore, in order to compute
+annual statistics for a year-crossing season, it is necessary to modify first the vector of years, 
+and assign year 2001 to the preceding December. Similarly, the next December 2001 belongs to winter 2002,
+and so on... The function is useful for computing and/or plotting annual statistics, seasonal climatologies ...
+</p>
+
+
+<h3>Value</h3>
+
+<p>A vector of years of the same length as the time dimension of the object, 
+seasonally-adjusted in the case of year-crossing seasons (e.g. DJF). See details.
+</p>
+
+
+<h3>Note</h3>
+
+<p>Warning:
+The function should no be used to extract the vector of actual date years
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other get.helpers: <code><a href="get2DmatCoordinates.html">get2DmatCoordinates</a></code>,
+<code><a href="getCoordinates.html">getCoordinates</a></code>, <code><a href="getDim.html">getDim</a></code>,
+<code><a href="getGridVerticalLevels.html">getGridVerticalLevels</a></code>,
+<code><a href="getGrid.html">getGrid</a></code>, <code><a href="getRefDates.html">getRefDates</a></code>,
+<code><a href="getSeason.html">getSeason</a></code>, <code><a href="getShape.html">getShape</a></code>,
+<code><a href="getTimeResolution.html">getTimeResolution</a></code>,
+<code><a href="getVarNames.html">getVarNames</a></code>, <code><a href="typeofGrid.html">typeofGrid</a></code>,
+<code><a href="which.leap.html">which.leap</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("NCEP_Iberia_hus850")
+getSeason(NCEP_Iberia_hus850)
+# Winter 1983-2002
+range(NCEP_Iberia_hus850$Dates$start)
+## Time series for the first point
+# Dates vector
+time &lt;- as.POSIXlt(NCEP_Iberia_hus850$Dates$start, tz = "GMT")
+hus850 &lt;- NCEP_Iberia_hus850$Data[ ,1,1]
+plot(time, hus850, ty = "l")
+## Computation of the annual series for winter specific humidity:
+par(mfrow = c(2,1))
+## Wrong:
+years &lt;- as.POSIXlt(NCEP_Iberia_hus850$Dates$start)$year + 1900
+x &lt;- tapply(hus850, INDEX = list(years), FUN = mean)
+plot(unique(years), x, ty = "b")
+points(1990, x[1], col = "red", cex = 2, lwd = 2)
+## Correct:
+years &lt;- getYearsAsINDEX(NCEP_Iberia_hus850)
+x &lt;- tapply(hus850, INDEX = years, FUN = mean)
+plot(unique(years), x, ty = "b")
+par(mfrow = c(1,1))
+
+#Station data:
+data("VALUE_Iberia_tas")
+getYearsAsINDEX(VALUE_Iberia_tas)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

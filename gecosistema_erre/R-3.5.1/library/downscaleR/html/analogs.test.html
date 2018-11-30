@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Donwscaling with the analogs method (test).</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for analogs.test {downscaleR}"><tr><td>analogs.test {downscaleR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Donwscaling with the analogs method (test).</h2>
+
+<h3>Description</h3>
+
+<p>Donwscaling with the analogs method (test).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+analogs.test(newdata, x, y, dates, info)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>The grid data.  Class: matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>The grid data where to search the analogs. Class: matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>The observations data of the same days of x. Class: matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>dates</code></td>
+<td>
+<p>A list containing both the newdata grid  and x grid, dates.</p>
+</td></tr>
+<tr valign="top"><td><code>info</code></td>
+<td>
+<p>A list containing the information required to perform the analogs method: number of analogs, function, window. These parameters are grouped in a list in <code><a href="analogs.train.html">analogs.train</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The selected functions use the base R functions: <code><a href="../../base/html/mean.html">mean</a></code>, <code><a href="../../stats/html/median.html">median</a></code>, <code><a href="../../stats/html/weighted.mean.html">weighted.mean</a></code>, <code><a href="../../stats/html/quantile.html">quantile</a></code>, <code><a href="../../base/html/Extremes.html">Extremes</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A matrix containing the predictions.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bano-Medina
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>downscaleR</em> version 3.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

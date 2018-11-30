@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Select an appropriate *pply function</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for selectPar.pplyFun {transformeR}"><tr><td>selectPar.pplyFun {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Select an appropriate *pply function</h2>
+
+<h3>Description</h3>
+
+<p>Selects an appropriate *pply function depending on the parallel choice
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+selectPar.pplyFun(parallel.pars, .pplyFUN = c("apply", "lapply", "sapply",
+  "mapply"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>parallel.pars</code></td>
+<td>
+<p>The output from <code><a href="parallelCheck.html">parallelCheck</a></code>, passing the parallelization options.</p>
+</td></tr>
+<tr valign="top"><td><code>.pplyFUN</code></td>
+<td>
+<p>*pply function to be used. Current options are <code>"apply"</code>, <code>"lapply"</code> and <code>"sapply"</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The output function will be either <code>parallel::parLapply</code> or <code>lapply</code> for <code>.pplyFUN = "lapply"</code>,
+depending of whether parallelization is enabled or not. Same for <code>apply</code> and <code>parallel::parApply</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A function
+</p>
+
+
+<h3>Warning</h3>
+
+<p>From the <code><a href="../../parallel/html/makeCluster.html">makeCluster</a></code> help: 
+&ldquo;It is good practice to shut down the workers by calling <code>stopCluster</code>&rdquo;. It is therefore recommended the
+following line of code after using this function: <code>on.exit(parallel::stopCluster(parallel.pars$cl))</code>
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other parallel.helpers: <code><a href="parallelCheck.html">parallelCheck</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

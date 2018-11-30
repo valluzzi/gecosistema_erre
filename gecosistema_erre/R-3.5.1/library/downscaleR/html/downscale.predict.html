@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Downscale climate data for a given statistical model.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for downscale.predict {downscaleR}"><tr><td>downscale.predict {downscaleR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Downscale climate data for a given statistical model.</h2>
+
+<h3>Description</h3>
+
+<p>Downscale data to local scales by statistical models previously obtained by <code><a href="downscale.train.html">downscale.train</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+downscale.predict(newdata, model)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>The grid data. It should be an object as returned by  <code><a href="prepareNewData.html">prepareNewData</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>An object containing the statistical model as returned from  <code><a href="downscale.train.html">downscale.train</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A regular/irregular grid object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bano-Medina
+</p>
+
+
+<h3>See Also</h3>
+
+<p>downscale.train for training a downscaling model
+prepareNewData for predictor preparation with new (test) data
+downscale.cv for automatic cross-validation 
+<a href="https://github.com/SantanderMetGroup/downscaleR/wiki/training-downscaling-models">downscaleR Wiki</a> for downscaling seasonal forecasting and climate projections.
+</p>
+<p>Other downscaling.functions: <code><a href="downscale.cv.html">downscale.cv</a></code>,
+<code><a href="downscale.train.html">downscale.train</a></code>, <code><a href="downscale.html">downscale</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Loading data
+library(downscaleR)
+data("VALUE_Iberia_tas")
+y &lt;- VALUE_Iberia_tas
+data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
+x &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+
+# Example1: Basic example (without cross-validation)
+data &lt;- prepareData(x = x, y = y, spatial.predictors = list(v.exp = 0.95))
+model.analogs &lt;- downscale.train(data, method = "analogs", n.analogs = 1)
+newdata &lt;- prepareNewData(x,data)
+pred &lt;- downscale.predict(newdata, model.analogs)
+# This produces the same result as model.analogs$pred
+
+# Example2:  Splitting data in train and test (simple cross-validation)
+xT &lt;- subsetGrid(x, years = 1983:1999)  # training predictors
+yT &lt;- subsetGrid(y, years = 1983:1999)   # training predictands
+data &lt;- prepareData(xT,yT)       # preparing the data
+model.analogs &lt;- downscale.train(data, method = "analogs", n.analogs = 1)
+xt &lt;- subsetGrid(x, years = 2000)       # test predictors
+yt &lt;- subsetGrid(y, years = 2000)       # test predictors
+newdata &lt;- prepareNewData(xt,data)     # preparing the new predictors
+pred  &lt;- downscale.predict(newdata, model.analogs)  # predicting
+# Plotting the results for station 5
+plot(yt$Data[,5],pred$Data[,5])
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>downscaleR</em> version 3.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

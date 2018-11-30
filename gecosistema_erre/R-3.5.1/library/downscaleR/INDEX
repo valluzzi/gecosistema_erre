@@ -1,0 +1,24 @@
+analogs.test            Donwscaling with the analogs method (test).
+analogs.train           Analogs
+biasCorrection          Bias correction methods
+dateReplacement         Compute dates of a downscaled observational
+                        dataset
+downs.predict           Switch to selected downscale method.
+downs.train             Switch to selected downscale method.
+downscale               Perfect-prog downscaling
+downscale.cv            Downscale climate data and reconstruct the
+                        temporal serie by splitting the data following
+                        a user-defined scheme
+downscale.predict       Downscale climate data for a given statistical
+                        model.
+downscale.train         Calibration of downscaling methods
+glm.predict             Donwscaling with a given generalized linear
+                        model (GLM).
+glm.train               Donwscaling with generalized linear models
+                        (GLM).
+isimip                  Bias correction ISI-MIP method
+loci                    Local intensity scaling of precipitation
+prepareData             Configuration of data for downscaling
+prepareNewData          Prepare newdata for predictions
+quickDiagnostics        Plots daily/annual series and the annual
+                        correlation map of different grid objects

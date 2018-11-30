@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Principal Component grid</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for PC2grid {transformeR}"><tr><td>PC2grid {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Principal Component grid</h2>
+
+<h3>Description</h3>
+
+<p>Convert a Principal Component to a 'time-series' grid.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+PC2grid(prinCompObj, var = names(prinCompObj)[1], pc.idx = 1,
+  scale = FALSE, opp = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>prinCompObj</code></td>
+<td>
+<p>A PCA object as returned by <code><a href="prinComp.html">prinComp</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>var</code></td>
+<td>
+<p>Character string. Name of the variable for which to extract the PC. Defaults to the first variable in <code>prinCompObj</code></p>
+</td></tr>
+<tr valign="top"><td><code>pc.idx</code></td>
+<td>
+<p>Index position of the PC to be converted to a grid. Default to the first PC (<code>pc.idx = 1</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+<p>Logical. Should the time series values be scaled?. Default to <code>FALSE</code>. If <code>TRUE</code>, the default <code><a href="../../base/html/scale.html">scale</a></code>
+method is applied to each time series.</p>
+</td></tr>
+<tr valign="top"><td><code>opp</code></td>
+<td>
+<p>Logical. Default to <code>FALSE</code> and rarely used. The data are multiplied by -1 so the opposite is returned.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The XY coordinates correspond to the centroid of the window used for the PCA analysis. Details on the extent of this
+window are provided by the attributes <code>domX</code> and <code>domY</code> within the <code>xyCoords</code> component.
+</p>
+<p>Currently, only the start days are returned. The end dates are not returned by the <code>prinComp</code> output.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A 'time series' grid (i.e., a grid with dimensions lon and lat of length 1). It can be a multimember.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other pca: <code><a href="grid2PCs.html">grid2PCs</a></code>,
+<code><a href="gridFromPCA.html">gridFromPCA</a></code>, <code><a href="plotEOF.html">plotEOF</a></code>,
+<code><a href="prinComp.html">prinComp</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("CFS_Iberia_psl")
+pc &lt;- prinComp(CFS_Iberia_psl, v.exp = .95)
+# Convert to grid the PC of the leading EOF (pc.idx = 1):
+psl.index &lt;- PC2grid(prinCompObj = pc, pc.idx = 1)
+aggr.fun &lt;- list(FUN = "mean", na.rm = TRUE)
+psl.index &lt;- aggregateGrid(psl.index, aggr.m = aggr.fun, aggr.y = aggr.fun,
+                           aggr.mem = aggr.fun)
+plot(as.Date(getRefDates(psl.index)), psl.index$Data, ty = "o",
+     xlab = "year", ylab = "SLP index")
+abline(h=0, lty = 2)
+title(main = "1st PC of multimember mean DJF SLP over Iberia")
+# opp can be used to obtain the inverse:
+psl.index.inv &lt;- PC2grid(prinCompObj = pc, pc.idx = 1, opp = TRUE)
+psl.index.inv &lt;- aggregateGrid(psl.index.inv, aggr.m = aggr.fun, aggr.y = aggr.fun,
+                           aggr.mem = aggr.fun)
+lines(as.Date(getRefDates(psl.index.inv)), psl.index.inv$Data, ty = "o", col = "red")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

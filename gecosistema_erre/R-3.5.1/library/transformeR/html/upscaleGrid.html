@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Flexible grid aggregation along selected dimensions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for upscaleGrid {transformeR}"><tr><td>upscaleGrid {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Flexible grid aggregation along selected dimensions</h2>
+
+<h3>Description</h3>
+
+<p>Aggregates a grid along the target dimensions using user-defined functions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+upscaleGrid(grid, times = 2, aggr.fun = list(FUN = max, na.rm = TRUE))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>a grid or multigrid to be aggregated.</p>
+</td></tr>
+<tr valign="top"><td><code>times</code></td>
+<td>
+<p>Degradation times. For instance, if the resolution of <code>grid</code>
+is 1 degree and <code>times = 2</code>, the resolution of the output grid will be 2 
+degrees.</p>
+</td></tr>
+<tr valign="top"><td><code>aggr.fun</code></td>
+<td>
+<p>Upscale function. Default retains the maximum value.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The development of a more eficient and fast version of the function is planned.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A grid or multigrid aggregated along the chosen dimension(s).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>M. Iturbide
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("EOBS_Iberia_pr")
+library(visualizeR)
+spatialPlot(climatology(EOBS_Iberia_pr))
+newgrid &lt;- upscaleGrid(redim(EOBS_Iberia_pr), 
+                       times = 2,
+                       aggr.fun = list(FUN = "min", na.rm = TRUE))
+spatialPlot(climatology(newgrid))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Empirical variogram of a climatology</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for climatologyVariogram {transformeR}"><tr><td>climatologyVariogram {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Empirical variogram of a climatology</h2>
+
+<h3>Description</h3>
+
+<p>Calculate (and draw) the empirical semivariogram of a climatological grid
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+climatologyVariogram(clim, n.classes = 20, do.log = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>clim</code></td>
+<td>
+<p>A climatological grid (see <code><a href="climatology.html">climatology</a></code>)</p>
+</td></tr>
+<tr valign="top"><td><code>n.classes</code></td>
+<td>
+<p>The number of distance classes used to compute the variogram</p>
+</td></tr>
+<tr valign="top"><td><code>do.log</code></td>
+<td>
+<p>Logical. Should the variable be log-transformed prior to variogram calculation? Default to <code>FALSE</code>.
+Otherwise <code><a href="../../base/html/Log.html">log1p</a></code> is used.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The x-axis of the variogram is tyically truncated at half the maximum distance of the dataset, so this is the default behaviour.
+</p>
+<p>Note that the empirical semivariogram is used under the assumption of normality. Thus, the 
+<code>do.log</code> option may be activated for non-gaussian fields.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Plots a semivariogram and invisibly returns the data used to construct it (semivariance, distance class and number
+of pairs of points per distance class).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J Bedia
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("EOBS_Iberia_pr")
+# We compute the mean annual DJF precipitation
+aggr.fun &lt;- list(FUN = "sum")
+annual.tp &lt;- aggregateGrid(EOBS_Iberia_pr, aggr.m = aggr.fun, aggr.y = aggr.fun)
+# Now the winter precipitation climatology is computed
+tp.clim &lt;- climatology(annual.tp)
+plotClimatology(tp.clim,
+                backdrop.theme = "countries",
+                main = "mean DJF precip (1983-2002)")
+# Visual assessment of normality                
+par(mfrow = c(1,2))
+hist(tp.clim$Data, main = "raw field")
+hist(log1p(tp.clim$Data), main = "log-transformed")
+par(mfrow = c(1,1))
+# Log transformation seems advisable
+# The empirical variogram:
+climatologyVariogram(clim = tp.clim, n.classes = 20, do.log = TRUE)
+# The number of paris of points within each distance class is
+# indicated by the figures on the line
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get the index of the window days.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getWindowIndex {downscaleR}"><tr><td>getWindowIndex {downscaleR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get the index of the window days.</h2>
+
+<h3>Description</h3>
+
+<p>Get the index of the days that corresponding to the window and the target days centered in it.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getWindowIndex(y, x, newdata, window, delta.method = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>A grid or station data containing the observed climate data for the training period</p>
+</td></tr>
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>A grid containing the simulated climate for the test period.</p>
+</td></tr>
+<tr valign="top"><td><code>window</code></td>
+<td>
+<p>vector of length = 2 (or 1) specifying the time window width used to calibrate and the 
+target days (days that are being corrected). If the window length = 1 the window width is no larger than the 
+target days. The window is centered on the target day/s (window width &gt;= target days).</p>
+</td></tr>
+<tr valign="top"><td><code>delta.method</code></td>
+<td>
+<p>logical (default is FALSE)</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>method applied. Current accepted values are <code>"eqm"</code>, <code>"delta"</code>,
+<code>"scaling"</code>, <code>"pqm"</code> and <code>"gpqm"</code> <code>"variance"</code>,<code>"loci"</code> and <code>"ptr"</code>. See details.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>M. Iturbide
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>downscaleR</em> version 3.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

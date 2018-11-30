@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Lattice plot methods for climatological grids</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plotClimatology {transformeR}"><tr><td>plotClimatology {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Lattice plot methods for climatological grids</h2>
+
+<h3>Description</h3>
+
+<p>A wrapper for the lattice (trellis) plot methods for spatial data in <code>sp::spplot</code>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+plotClimatology(grid, backdrop.theme = "none", set.min = NULL,
+  set.max = NULL, lonCenter = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>Input grid</p>
+</td></tr>
+<tr valign="top"><td><code>backdrop.theme</code></td>
+<td>
+<p>Reference geographical lines to be added to the plot. See Details.</p>
+</td></tr>
+<tr valign="top"><td><code>set.min</code></td>
+<td>
+<p>Numeric value indicating an absolute minimum value (default to <code>NULL</code>). All grid values below this are mapped to <code>set.min</code>. See details.</p>
+</td></tr>
+<tr valign="top"><td><code>set.max</code></td>
+<td>
+<p>Same as <code>set.min</code> argument, but to force a ceiling.</p>
+</td></tr>
+<tr valign="top"><td><code>lonCenter</code></td>
+<td>
+<p>Value of the longitude to be centered in the plot.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments passed to <code>spplot</code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function applies the <code><a href="../../sp/html/spplot.html">spplot</a></code> method after conversion of the climatological map(s) to a
+<code>SpatialGridDataFrame</code>.
+</p>
+<p>The <code>set.min</code> and <code>set.max</code> options are useful in order to preserve adequate ranges for map representation,
+avoiding the influence of extreme values. Note that this is different than setting a range of values with an 
+interval using the <code>at</code> argument. The latter choice, that overrides <code>set.min</code> and <code>set.max</code>,
+leaves blank grid points for outlying values.
+</p>
+<p><strong>Multigrids</strong>
+</p>
+<p>Multigrids of climatologies can be created using <code>makeMultiGrid</code> 
+for trellis visualization of different variables, or for instance, for the comparison of
+raw and corrected/downscaled scenarios side to side. In case of multimember multigrids, 
+the function will internally compute the ensemble mean of each variable in the multigrid
+for representation (with a message).
+</p>
+<p><strong>Backdrop theme</strong>
+</p>
+<p>Current implemented options are <code>"none"</code> and <code>"coastline"</code>, which contains
+a simplied vector theme delineating the world coastlines. Any other themes can be introduced
+by the user using the <code>sp.layout</code> options in <code>spplot</code>.
+</p>
+<p><strong>Controlling graphical parameters</strong>
+</p>
+<p>Many different aspects of the map can be controlled passing the relevant arguments to 
+<code>spplot</code>. Fine control of graphical parameters for the trellis display can
+be also controlled using <code><a href="../../lattice/html/trellis.par.set.html">trellis.par.set</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>As spplot, <code>plotClimatology</code> returns a lattice plot of class &ldquo;trellis&rdquo;. 
+If you fail to &ldquo;see&rdquo; it, explicitly call <code>print(plotClimatology(...))</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>References</h3>
+
+
+<ul>
+<li><p> Bivand, R.S., Pebesma, E.J., Gomez-Rubio, V., 2013. Applied Spatial Data Analysis with R, 2nd ed, useR! Springer, NY.
+</p>
+</li>
+<li><p> For some graticulate customization examples, visit the <em>sp Gallery</em>: <a href="https://edzer.github.io/sp/">https://edzer.github.io/sp/</a>
+</p>
+</li></ul>
+
+
+
+<h3>See Also</h3>
+
+<p><code><a href="climatology.html">climatology</a></code> for details on climatology calculation.
+<code><a href="map.stippling.html">map.stippling</a></code>, for adding a custom point layer on top of the map.
+<code><a href="map.lines.html">map.lines</a></code>, to add lines and polygons to climatological maps
+Also see <code><a href="../../sp/html/spplot.html">spplot</a></code> in package <span class="pkg">sp</span> for further information on plotting capabilities and options
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("CFS_Iberia_tas")
+# Climatology is computed:
+clim &lt;- climatology(CFS_Iberia_tas, by.member = TRUE)
+plotClimatology(clim)
+# Geographical lines can be added using the argument 'backdrop.theme':
+plotClimatology(clim, backdrop.theme = "coastline")
+plotClimatology(clim, backdrop.theme = "coastline", center = 180)
+
+# Further arguments can be passed to 'spplot'...
+
+# ... a subset of members to be displayed, using 'zcol':
+plotClimatology(clim,
+                backdrop.theme = "coastline",
+                zcol = 1:4)
+
+# ... regional focuses (e.g. the Iberian Peninsula).
+plotClimatology(clim,
+                backdrop.theme = "countries",
+                xlim = c(-10,5), ylim = c(35,44),
+                zcol = 1:4,
+                scales = list(draw = TRUE))
+
+# Changing the default color palette and ranges:
+plotClimatology(clim,
+                backdrop.theme = "coastline",
+                zcol = 1:4,
+                col.regions = cm.colors(27), at = seq(10,37,1))
+
+# For ensemble means climatology should be called with 'by.member' set to FALSE:
+clim &lt;- climatology(CFS_Iberia_tas, by.member = FALSE)
+
+# Adding contours to the plot is direct with argument 'contour':
+plotClimatology(clim,
+                scales = list(draw = TRUE),
+                contour = TRUE,
+                main = "tas Predictions July Ensemble Mean")
+
+
+## Example of multigrid plotting
+data("NCEP_Iberia_psl")
+## Winter data are split into monthly climatologies
+monthly.clim.grids &lt;- lapply(getSeason(NCEP_Iberia_psl), function(x) {
+      climatology(subsetGrid(NCEP_Iberia_psl, season = x))
+})
+## Skip the temporal checks, as grids correspond to different time slices
+mg &lt;- do.call("makeMultiGrid",
+              c(monthly.clim.grids, skip.temporal.check = TRUE))
+              ## We change the panel names
+plotClimatology(mg,
+                backdrop.theme = "coastline",
+                names.attr = c("DEC","JAN","FEB"),
+                main = "Mean PSL climatology 1991-2010",
+                scales = list(draw = TRUE))
+
+# Station data:
+data("VALUE_Iberia_pr")
+plotClimatology(climatology(VALUE_Iberia_pr), backdrop.theme = "countries")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

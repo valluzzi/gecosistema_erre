@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Retrieve reference dates</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getRefDates {transformeR}"><tr><td>getRefDates {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Retrieve reference dates</h2>
+
+<h3>Description</h3>
+
+<p>Retrieves the <code>$start</code> component of the <code>$Dates</code> element of a grid or station.
+In case of multigrids, the dates from the first grid are returned (i.e.: <code>grid$Dates[[1]]$start</code>).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getRefDates(obj, which = "start")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p>A grid or station object</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>Character string. The element of the <code>$Dates</code> list to be extracted.
+Default to <code>"start"</code>, otherwise <code>"end"</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This utility function should be used always that reference dates are internally required by any function.
+It takes into account the particular case when <code><a href="redim.html">redim</a></code> is applied to create a singleton <code>"var"</code>
+dimension: in this situation, the <code>"Dates"</code> component is not changed accordingly, and thus the criterion to
+distinguish multigrids from redim-ed grids is the shape of the array.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A character vector of dates
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other get.helpers: <code><a href="get2DmatCoordinates.html">get2DmatCoordinates</a></code>,
+<code><a href="getCoordinates.html">getCoordinates</a></code>, <code><a href="getDim.html">getDim</a></code>,
+<code><a href="getGridVerticalLevels.html">getGridVerticalLevels</a></code>,
+<code><a href="getGrid.html">getGrid</a></code>, <code><a href="getSeason.html">getSeason</a></code>,
+<code><a href="getShape.html">getShape</a></code>, <code><a href="getTimeResolution.html">getTimeResolution</a></code>,
+<code><a href="getVarNames.html">getVarNames</a></code>, <code><a href="getYearsAsINDEX.html">getYearsAsINDEX</a></code>,
+<code><a href="typeofGrid.html">typeofGrid</a></code>, <code><a href="which.leap.html">which.leap</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+#Station data:
+data("VALUE_Iberia_tas")
+str(getRefDates(VALUE_Iberia_tas))
+#Regular grid
+data("NCEP_Iberia_hus850")
+str(getRefDates(NCEP_Iberia_hus850, which = "end"))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

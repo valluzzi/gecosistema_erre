@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Spatial overlay for grids and Spatial* objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for overGrid {transformeR}"><tr><td>overGrid {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Spatial overlay for grids and Spatial* objects</h2>
+
+<h3>Description</h3>
+
+<p>Application of function <code>over</code> from <span class="pkg">sp</span> to grids or
+station data.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+overGrid(grid, layer, subset = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>Input grid or station data.</p>
+</td></tr>
+<tr valign="top"><td><code>layer</code></td>
+<td>
+<p>SpatialPolygons object from which the geometries or attributes are 
+queried (type <code>help(package = "sp")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>subset</code></td>
+<td>
+<p>Logical (default is FALSE). If TRUE, spatial subsetting is performed over
+the imput grid using the bounding coordinates of argument 'layer'.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>All grid locations outside layer are filled with NAs.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A grid or station data.
+</p>
+<p>A grid
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>M. Iturbide
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other subsetting: <code><a href="getTemporalIntersection.html">getTemporalIntersection</a></code>,
+<code><a href="intersectGrid.spatial.html">intersectGrid.spatial</a></code>,
+<code><a href="intersectGrid.time.html">intersectGrid.time</a></code>,
+<code><a href="intersectGrid.html">intersectGrid</a></code>,
+<code><a href="subsetDimension.html">subsetDimension</a></code>, <code><a href="subsetGrid.html">subsetGrid</a></code>,
+<code><a href="subsetMembers.html">subsetMembers</a></code>, <code><a href="subsetRuntime.html">subsetRuntime</a></code>,
+<code><a href="subsetSeason.html">subsetSeason</a></code>, <code><a href="subsetSpatial.html">subsetSpatial</a></code>,
+<code><a href="subsetStation.html">subsetStation</a></code>, <code><a href="subsetVar.html">subsetVar</a></code>,
+<code><a href="subsetYears.html">subsetYears</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

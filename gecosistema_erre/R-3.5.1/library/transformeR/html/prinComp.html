@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Principal Component Analysis of Grids</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for prinComp {transformeR}"><tr><td>prinComp {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Principal Component Analysis of Grids</h2>
+
+<h3>Description</h3>
+
+<p>Performs a Principal Component Analysis of grids, multigrids or multimember multigrids. The core of this
+function is <code>stats::prcomp</code>, with several specific options to deal with climate data.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+prinComp(grid, n.eofs = NULL, v.exp = NULL, which.combine = NULL,
+  scaling = "gridbox", keep.orig = FALSE, quiet = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>A grid (gridded or station dataset), multigrid, multimember grid or multimember multigrid object</p>
+</td></tr>
+<tr valign="top"><td><code>n.eofs</code></td>
+<td>
+<p>Integer vector. Number of EOFs to be retained. Default to <code>NULL</code>, indicating
+that either all EOFs are kept, or that the next argument will be used as criterion
+for its determination. See next argument and details.</p>
+</td></tr>
+<tr valign="top"><td><code>v.exp</code></td>
+<td>
+<p>Maximum fraction of explained variance, in the range (0,1]. Used to determine the number of EOFs 
+to be retained, as an alternative to <code>n.eofs</code>. Default to <code>NULL</code>. See details.</p>
+</td></tr>
+<tr valign="top"><td><code>which.combine</code></td>
+<td>
+<p>Optional. A character vector with the short names of the variables of the multigrid used
+to construct 'combined' PCs (use the <code><a href="getVarNames.html">getVarNames</a></code> helper if not sure about variable names).</p>
+</td></tr>
+<tr valign="top"><td><code>scaling</code></td>
+<td>
+<p>Method for performing the scaling (and centering) of the input raw data matrix. Currently only the <code>"gridbox"</code> option is available.
+Currently accepted choices are <code>"field"</code> (the default) and <code>"gridbox"</code>. See details.</p>
+</td></tr>
+<tr valign="top"><td><code>keep.orig</code></td>
+<td>
+<p>Logical flag indicating wheter to return the input data -the standardized input data matrices-
+used to perform the PCA (<code>keep.orig = TRUE</code>) or not (<code>FALSE</code>). Default to <code>FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>True to silence all the messages (but not the warnings)</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><strong>Number of EOFs</strong>
+</p>
+<p><code>n.eofs</code> and <code>v.exp</code> are alternative choices for the determination
+of the number of EOFs (hence also the corresponding PCs) to be retained. If both are <code>NULL</code> (the default)
+, all EOFs will be retained. If both are given a value different from <code>NULL</code>, 
+the <code>n.eofs</code> argument will prevail, and <code>v.exp</code> will be ignored, with a warning.
+When dealing with multigrids, the <code>n.eofs</code> argument can be either a single value or a vector
+of the same length as the number of variables contained in the multigrid plus (possibly) the COMBINED field if any.
+The same behaviour holds for <code>v.exp</code>. 
+</p>
+<p><strong>Scaling and centering</strong>
+</p>
+<p>In order to eliminate the effect of the varying scales of the different climate variables, the input
+data matrix is always scaled and centered, and there is no choice to avoid this step. However, the mean
+and standard deviation can be either computed for each grid box individually (<code>"gridbox"</code>) or for all
+grid-boxes globally (i.e., at the field level, <code>"field"</code>). The last case is preferred in order to preserve
+the spatial structure of the original field, and has been set as the default, 
+returning one single mean and sigma parameter for each variable. If the <code>"gridbox"</code>
+approach is selected, a vector of length <em>n</em>, where <em>n</em> is the number of grid-cells composing the 
+grid, is returned for both the mean and sigma parameters (this is equivalent to using the <code><a href="../../base/html/scale.html">scale</a></code>
+function with the input data matrix). 
+</p>
+<p>The method used is returned as a global attribute of the returned object (<code>"scaled:method"</code>), and the 
+<em>mu</em> and <em>sigma</em> parameters are returned as attributes of the corresponding variables
+(<code>"scaled:scale"</code> and <code>"scaled:center"</code> respectively).
+</p>
+<p>As in the case of <code>n.eofs</code> and <code>v.exp</code> arguments, it is possible to indicate one single approach
+for all variables within multigrids (using one single value, as by default), or indicate a specific approach for
+each variable sepparately (using a vector of the same length as the number of variables contained in the multigrid). However,
+the latter approach is rarely used and it is just implemented for maximum flexibility in the downscaling experimental setup.
+</p>
+<p><strong>Combined EOF analysis</strong>
+</p>
+<p>When dealing with multigrid data, apart from the PCA analysis performed on each variable individually,
+a combined analysis considering some or all variables together can be done. This is always returned in the last element
+of the output list under the name <code>"COMBINED"</code>. The variables used for combination (if any) are controlled by the 
+argument <code>which.combine</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list of <em>N</em> elements for multigrids, where <em>N</em> is the number of input variables used, and 
+<em>N+1</em> if combined PCs are calculated, placed in the last place under the <code>"COMBINED"</code> name.
+In case of single grids (1 variable only), a list of length 1  (without the combined element). For each element of the list, the following objects are returned, either in the form of
+another list (1 element for each member) for multimembers, or not in the case of non multimember inputs:
+</p>
+
+<ul>
+<li> <p><code>PCs</code>: A matrix of principal components, arranged in columns by decreasing importance order 
+</p>
+</li>
+<li> <p><code>EOFs</code>: A matrix of EOFs, arranged in columns by decreasing importance order
+</p>
+</li>
+<li> <p><code>orig</code>: Either the original variable in the form of a 2D-matrix (when <code>keep.orig = TRUE</code>),
+or <code>NA</code> when <code>keep.origin = FALSE</code> (the default). In both cases, the parameters used for input data standardization
+(mean and standard deviation) are returned as attributes of this component (see the examples).
+</p>
+</li></ul>
+
+<p>The &ldquo;order of importance&rdquo; is given by the explained variance of each PC, as indicated
+in the attribute <code>"explained_variance"</code> as a cumulative vector.
+Additional information is returned via the remaining attributes (see details), including geo-referencing and time.
+</p>
+
+
+<h3>Note</h3>
+
+<p>Performing PCA analysis on multimember multigrids may become time-consuming and computationally expensive. 
+It is therefore advisable to avoid the use of this option for large datasets, and iterate over single
+multimember grids instead.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia, M. de Felice
+</p>
+
+
+<h3>References</h3>
+
+<p>Gutierrez, J.M., R. Ancell, A. S. Cofiño and C. Sordo (2004). Redes Probabilisticas
+y Neuronales en las Ciencias Atmosfericas. MIMAM, Spain. 279 pp.
+<a href="http://www.meteo.unican.es/en/books/dataMiningMeteo">http://www.meteo.unican.es/en/books/dataMiningMeteo</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other pca: <code><a href="PC2grid.html">PC2grid</a></code>, <code><a href="grid2PCs.html">grid2PCs</a></code>,
+<code><a href="gridFromPCA.html">gridFromPCA</a></code>, <code><a href="plotEOF.html">plotEOF</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
+multigrid &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+# In this example, we retain the PCs explaining the 99\% of the variance
+pca &lt;- prinComp(multigrid, v.exp = c(.95,0.90,.90), keep.orig = FALSE)
+# The output is a named list with the PC's and EOFs (plus additional atttributes) for each variable
+# within the input grid:
+str(pca)
+names(pca)
+# Note that, apart from computing the principal components and EOFs for each grid, 
+# it also returns, in the last element of the output list,
+# the results of a PC analysis of the combined variables when 'which.combine' is activated:
+pca &lt;- prinComp(multigrid, v.exp = c(.99,.95,.90,.95),
+                which.combine = c("ta@850", "psl"), keep.orig = FALSE)
+str(pca)
+# A special attribute indicates the variables used for combination
+attributes(pca$COMBINED)
+# The different attributes of the pca object provide information regarding the variables involved
+# and the geo-referencing information
+str(attributes(pca))
+# In addition, for each variable (and their combination), the scaling and centering parameters 
+# are also returned. There is one value of each parameter per grid point. For instance, 
+# the parameters for the specific humidity field are:
+attributes(pca[["hus@850"]][[1]]$orig)$`scaled:center`
+attributes(pca[["hus@850"]][[1]]$orig)$`scaled:scale`
+# In addition, the (cumulative) explained variance of each PC is also returned:
+vexp &lt;- attributes(pca$"hus@850"[[1]])$explained_variance
+# The classical "scree plot":
+barplot(1-vexp, names.arg = paste("PC",1:length(vexp)), las = 2, 
+        ylab = "Fraction of unexplained variance")
+# This is an example using a multimember object:
+data("CFS_Iberia_hus850")
+# In this case we retain the first 5 EOFs:
+pca.mm &lt;- prinComp(CFS_Iberia_hus850, n.eofs = 5) 
+# Note that now the results of the PCA for the variable are a named list, with the results 
+# for each member sepparately considered
+str(pca.mm)
+# The most complex situation comes from multimember multigrids:
+data("CFS_Iberia_pr", "CFS_Iberia_tas")
+# Now the multimember multigrid is constructed
+mm.multigrid &lt;- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
+# Use different n.eofs for each variable:
+pca.mm.mf &lt;- prinComp(mm.multigrid, n.eofs = c(3,5))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

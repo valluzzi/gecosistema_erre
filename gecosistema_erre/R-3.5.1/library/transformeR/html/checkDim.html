@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Spatial check of input grids</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for checkDim {transformeR}"><tr><td>checkDim {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Spatial check of input grids</h2>
+
+<h3>Description</h3>
+
+<p>Checks that the input grids have the same lon/lat shape
+</p>
+<p>The function simply compares the size of the dimension across input grids for 
+structural consistency of their respective data arrays. It does not make any additional checks on the metadata,
+so equal array shapes do not entail full temporal/spatial consistency.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+checkDim(..., dimensions = c("var", "member", "time", "lat", "lon"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Input grids to be compared</p>
+</td></tr>
+<tr valign="top"><td><code>dimension</code></td>
+<td>
+<p>Character vector. Dimensions to check for consistency. Several dimensions can be tested at once.
+Possible values are: <code>"var"</code>, <code>"member"</code>, <code>"time"</code>, <code>"lat"</code> and <code>"lon"</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>In case of spatial inconsistency of any of the inputs grids, 
+the function stops the execution of the current expression, with an error message.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getShape.html">getShape</a></code>
+</p>
+<p>Other check.helpers: <code><a href="checkSeason.html">checkSeason</a></code>,
+<code><a href="checkVarNames.html">checkVarNames</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("VALUE_Iberia_tas")
+data("VALUE_Iberia_pr")
+checkDim(VALUE_Iberia_tas, VALUE_Iberia_pr) # ok, go on
+data("EOBS_Iberia_tas")
+data("EOBS_Iberia_pr")
+checkDim(EOBS_Iberia_tas, EOBS_Iberia_pr) # ok, go on
+data("NCEP_Iberia_psl")
+try(checkDim(EOBS_Iberia_tas, EOBS_Iberia_pr, NCEP_Iberia_psl)) # inconsistent dimensions
+data("CFS_Iberia_tas")
+try(checkDim(NCEP_Iberia_psl, CFS_Iberia_tas, dimensions = "member")) 
+checkDim(VALUE_Iberia_tas, VALUE_Iberia_pr) # ok, go on
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

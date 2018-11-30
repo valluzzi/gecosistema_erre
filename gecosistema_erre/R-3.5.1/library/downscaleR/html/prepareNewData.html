@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Prepare newdata for predictions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for prepareNewData {downscaleR}"><tr><td>prepareNewData {downscaleR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Prepare newdata for predictions</h2>
+
+<h3>Description</h3>
+
+<p>Prepare the prediction data according to the definition of the experiment
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+prepareNewData(newdata, data.structure)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>A grid containing the prediction data.</p>
+</td></tr>
+<tr valign="top"><td><code>data.structure</code></td>
+<td>
+<p>A structure, as returned by <code><a href="prepareData.html">prepareData</a></code></p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A named list with the components required by the downscaling method in order to perform the predictions
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="https://github.com/SantanderMetGroup/downscaleR/wiki/preparing-predictor-data">downscaleR Wiki</a> for preparing predictors for downscaling and seasonal forecasting.
+</p>
+<p>Other downscaling.helpers: <code><a href="predictor.nn.indices.html">predictor.nn.indices</a></code>,
+<code><a href="predictor.nn.values.html">predictor.nn.values</a></code>,
+<code><a href="prepareData.html">prepareData</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Loading data
+data("VALUE_Iberia_tas")
+y &lt;- VALUE_Iberia_tas 
+data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
+x &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+# Calculating EOFs
+data &lt;- prepareData(x = x, y = y, spatial.predictors = list(v.exp = 0.95))
+# Projecting a new dataset to the calculated EOFs
+newdata &lt;- prepareNewData(x,data)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>downscaleR</em> version 3.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

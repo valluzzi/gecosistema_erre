@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Grid containing historical CMIP5 data (model CNRM-CM5) of...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for CMIP5_Iberia_tas {transformeR}"><tr><td>CMIP5_Iberia_tas {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Grid containing historical CMIP5 data (model CNRM-CM5) of daily mean temperature for the Iberian Peninsula (DJF, 1983-2002).</h2>
+
+<h3>Description</h3>
+
+<p>This R data object was obtained from the UDG server (<a href="http://www.meteo.unican.es/udg-tap">http://www.meteo.unican.es/udg-tap</a>, 
+log in is requiered, 
+see <code><a href="../../loadeR/html/loginUDG.html">loginUDG</a></code>) by means of function <code><a href="../../loadeR/html/loadGridData.html">loadGridData</a></code> 
+(package <a href="https://github.com/SantanderMetGroup/loadeR"><code>loadeR</code></a>) in the following manner:
+</p>
+<p><code>years &lt;- 1983:2002</code><br /> 
+<code>season &lt;- c(12,1,2)</code><br /> 
+<code>lonLim &lt;- c(-10, 4)</code><br /> 
+<code>latLim &lt;- c(35, 44)</code><br /> 
+</p>
+<p><code>loginUDG("username", "pasword")</code><br /> 
+</p>
+<p><code>CMIP5_Iberia_tas &lt;- loadGridData(dataset = "http://meteo.unican.es/tds5/dodsC/cmip5/CNRM-CERFACS/CNRM-CM5/historical/day/cnrm-cerfacs_cnrm-cm5_historical_r1i1p1.ncml", 
+                                      var = "tas", 
+                                      years = years, 
+                                      lonLim = lonLim, 
+                                      latLim = latLim, 
+                                      season = season)</code><br />
+</p>
+
+
+<h3>Format</h3>
+
+<p>A grid</p>
+
+
+<h3>Source</h3>
+
+<p><a href="http://www.meteo.unican.es/udg-tap">http://www.meteo.unican.es/udg-tap</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="makeMultiGrid.html">makeMultiGrid</a></code>, <code><a href="../../loadeR/html/loadGridData.html">loadGridData</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("CMIP5_Iberia_tas")
+plotClimatology(climatology(CMIP5_Iberia_tas),
+                backdrop.theme = "countries", scales = list(draw = TRUE))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

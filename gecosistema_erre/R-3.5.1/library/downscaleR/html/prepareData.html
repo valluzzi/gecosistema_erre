@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Configuration of data for downscaling</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for prepareData {downscaleR}"><tr><td>prepareData {downscaleR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Configuration of data for downscaling</h2>
+
+<h3>Description</h3>
+
+<p>Configuration of data for flexible downscaling experiment definition
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+prepareData(x, y, global.vars = NULL, combined.only = TRUE,
+  spatial.predictors = NULL, local.predictors = NULL,
+  extended.predictors = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A grid (usually a multigrid) of predictor fields</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>A grid (usually a stations grid, but not necessarily) of observations (predictands)</p>
+</td></tr>
+<tr valign="top"><td><code>global.vars</code></td>
+<td>
+<p>An optional character vector with the short names of the variables of the input <code>x</code> 
+multigrid to be retained as global predictors (use the <code><a href="../../transformeR/html/getVarNames.html">getVarNames</a></code> helper if not sure about variable names).
+This argument just produces a call to <code><a href="../../transformeR/html/subsetGrid.html">subsetGrid</a></code>, but it is included here for better
+flexibility in downscaling experiments (predictor screening...). For instance, it allows to use some 
+specific variables contained in <code>x</code> as local predictors and the remaining ones, specified in <code>subset.vars</code>,
+as either raw global predictors or to construct the combined PC.</p>
+</td></tr>
+<tr valign="top"><td><code>combined.only</code></td>
+<td>
+<p>Optional, and only used if spatial.predictors parameters are passed. Should the combined PC be used as the only
+global predictor? Default to TRUE. Otherwise, the combined PC constructed with <code>which.combine</code> argument in 
+<code><a href="../../transformeR/html/prinComp.html">prinComp</a></code> is append to the PCs of the remaining variables within the grid.</p>
+</td></tr>
+<tr valign="top"><td><code>spatial.predictors</code></td>
+<td>
+<p>Default to <code>NULL</code>, and not used. Otherwise, a named list of arguments in the form <code>argument = value</code>,
+with the arguments to be passed to <code><a href="../../transformeR/html/prinComp.html">prinComp</a></code> to perform Principal Component Analysis
+of the predictors grid (<code>x</code>). See Details on principal component analysis of predictors.</p>
+</td></tr>
+<tr valign="top"><td><code>local.predictors</code></td>
+<td>
+<p>Default to <code>NULL</code>, and not used. Otherwise, a named list of arguments in the form <code>argument = value</code>,
+with the following arguments:
+</p>
+
+<ul>
+<li> <p><code>vars</code>: names of the variables in <code>x</code> to be used as local predictors
+</p>
+</li>
+<li> <p><code>fun</code>: Optional. Aggregation function for the selected local neighbours.
+The aggregation function is specified as a list, indicating the name of the aggregation function in
+first place (as character), and other optional arguments to be passed to the aggregation function.
+For instance, to compute the average skipping missing values: <code>fun = list(FUN= "mean", na.rm = TRUE)</code>.
+Default to NULL, meaning that no aggregation is performed.
+</p>
+</li>
+<li> <p><code>n</code>: Integer. Number of nearest neighbours to use. If a single value is introduced, and there is more
+than one variable in <code>vars</code>, the same value is used for all variables. Otherwise, this should be a vector of the same
+length as <code>vars</code> to indicate a different number of nearest neighbours for different variables.
+</p>
+</li></ul>
+</td></tr>
+<tr valign="top"><td><code>extended.predictors</code></td>
+<td>
+<p>This is a parameter related to the extreme learning machine and reservoir computing framework where input data is randomly projected into a new space of size <code>n</code>. Default to <code>NULL</code>, and not used. Otherwise, a named list of arguments in the form <code>argument = value</code>,
+with the following arguments:
+</p>
+
+<ul>
+<li> <p><code>n</code>: A numeric value. Indicates the size of the random nonlinear dimension where the input data is projected.
+</p>
+</li>
+<li> <p><code>module</code>: A numeric value (Optional). Indicates the size of the mask's module. Belongs to a specific type of ELM called RF-ELM.
+</p>
+</li></ul>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><strong>Temporal consistency</strong>
+Note that <code>x</code> (predictors) and <code>y</code> predictands are checked for temporal consistency
+prior to downscaling. In case of partial temporal overlapping, both are internnaly intersected for exact temporal matching.
+</p>
+<p><strong>Principal Component Analysis</strong>
+Always that spatial.predictors is used, a combined PC will be returned (unless one single predictor is used, case in which no combination is possible).
+Note that the variables of the predictor grid used to construct the combined PC can be flexibly controlled through the optional argument
+<code>subset.vars</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A named list with components <code>y</code> (the predictand), <code>x.global</code> (global predictors, 2D matrix), <code>x.local</code> (local predictors, a list) 
+and <code>pca</code> (<code><a href="../../transformeR/html/prinComp.html">prinComp</a></code> output), and other attributes. See Examples.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia, D. San-Martín and J.M. Gutiérrez
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="https://github.com/SantanderMetGroup/downscaleR/wiki/preparing-predictor-data">downscaleR Wiki</a> for preparing predictors for downscaling and seasonal forecasting.
+</p>
+<p>Other downscaling.helpers: <code><a href="predictor.nn.indices.html">predictor.nn.indices</a></code>,
+<code><a href="predictor.nn.values.html">predictor.nn.values</a></code>,
+<code><a href="prepareNewData.html">prepareNewData</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Loading data
+data("VALUE_Iberia_tas")
+y &lt;- VALUE_Iberia_tas 
+data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
+x &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+# Raw data
+data &lt;- prepareData(x = x, y = y)
+# Using PCs as predictors. Number of EOFS: 10,5,5 for the 3 input variables
+data &lt;- prepareData(x = x, y = y, spatial.predictors = list(n.eofs = c(10,5,5)))
+# Using joined PCs as predictors. Explained variance 95%
+data &lt;- prepareData(x = x, y = y, 
+spatial.predictors = list(v.exp = 0.95, which.combine =getVarNames(x)))
+# Using local predictors: the 4 closest gridboxes
+data &lt;- prepareData(x = x, y = y,local.predictors = list(n=4, vars = getVarNames(x)))
+# Using joined PCs and local predictors: the 4 closest gridboxes
+data &lt;- prepareData(x = x, y = y,local.predictors = list(n=4, vars = getVarNames(x)),
+spatial.predictors = list(v.exp = 0.95, which.combine =getVarNames(x)))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>downscaleR</em> version 3.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

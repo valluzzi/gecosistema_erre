@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Temporal intersection</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getTemporalIntersection {transformeR}"><tr><td>getTemporalIntersection {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Temporal intersection</h2>
+
+<h3>Description</h3>
+
+<p>Takes two input grids and crops the overlapping part along time dimension
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getTemporalIntersection(obs, prd, which.return = c("obs", "prd"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obs</code></td>
+<td>
+<p>First grid (typically observations, but not necessarily)</p>
+</td></tr>
+<tr valign="top"><td><code>prd</code></td>
+<td>
+<p>Second grid (typically predictors in downscaling applications, but not necessarily)</p>
+</td></tr>
+<tr valign="top"><td><code>which.return</code></td>
+<td>
+<p>Which subset grid should be returned, <code>obs</code> or <code>prd</code>?</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The grid indicated in <code>which.return</code>, encompassing the overlapping time period with the other one.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="checkDim.html">checkDim</a></code>, <code><a href="checkSeason.html">checkSeason</a></code>, <code><a href="getYearsAsINDEX.html">getYearsAsINDEX</a></code>, <code><a href="getSeason.html">getSeason</a></code>, for other time dimension helpers
+</p>
+<p>Other subsetting: <code><a href="intersectGrid.spatial.html">intersectGrid.spatial</a></code>,
+<code><a href="intersectGrid.time.html">intersectGrid.time</a></code>,
+<code><a href="intersectGrid.html">intersectGrid</a></code>, <code><a href="overGrid.html">overGrid</a></code>,
+<code><a href="subsetDimension.html">subsetDimension</a></code>, <code><a href="subsetGrid.html">subsetGrid</a></code>,
+<code><a href="subsetMembers.html">subsetMembers</a></code>, <code><a href="subsetRuntime.html">subsetRuntime</a></code>,
+<code><a href="subsetSeason.html">subsetSeason</a></code>, <code><a href="subsetSpatial.html">subsetSpatial</a></code>,
+<code><a href="subsetStation.html">subsetStation</a></code>, <code><a href="subsetVar.html">subsetVar</a></code>,
+<code><a href="subsetYears.html">subsetYears</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("NCEP_Iberia_psl")
+range(getRefDates(NCEP_Iberia_psl))
+data("VALUE_Iberia_tas")
+range(getRefDates(EOBS_Iberia_tas))
+# Assuming sea-level pressure field from NCEP is the predictor, 
+# and VALUE observations are the predictand,
+# suppose they have different temporal periods:
+predictor &lt;- subsetGrid(NCEP_Iberia_psl, years = 1987:2001, season = 1)
+getSeason(predictor) # January
+range(getYearsAsINDEX(predictor)) # period 1987-2001 
+predictand &lt;- EOBS_Iberia_tas
+getSeason(predictand) # December-January-February (winter)
+range(getYearsAsINDEX(predictand)) # period 1983-2002
+# We often want to ensure that their time dimension matches perfectly before downscaling:
+try(checkDim(predictor, predictand, dimensions = "time"))
+# getTemporalIntersection is the solution:
+predictand.adj &lt;- getTemporalIntersection(obs = predictand, prd = predictor, which.return = "obs")
+getSeason(predictand.adj) # January 
+range(getYearsAsINDEX(predictand.adj)) # 1987-2001 
+# In the same vein, it is often required to be done again on the predictor 
+predictor.adj &lt;- getTemporalIntersection(obs = predictand, prd = predictor, which.return = "prd")
+checkDim(predictor.adj, predictand.adj, dimensions = "time") # perfect
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

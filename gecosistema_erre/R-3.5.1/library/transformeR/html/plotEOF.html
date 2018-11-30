@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot EOFs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plotEOF {transformeR}"><tr><td>plotEOF {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plot EOFs</h2>
+
+<h3>Description</h3>
+
+<p>Plots an arbitrary number of EOFs. Useful to have a quick overview of the main spatial modes
+of a (possibly multimember) grid.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+plotEOF(prinCompObj, var = NULL, member = 1, n.eofs = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>prinCompObj</code></td>
+<td>
+<p>A PCA object as returned by <code><a href="prinComp.html">prinComp</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>var</code></td>
+<td>
+<p>Character string indicating the variable whose EOFs are to be displayed. If the PCA analysis has
+been applied to 1 single grid, this argument can be omitted.</p>
+</td></tr>
+<tr valign="top"><td><code>member</code></td>
+<td>
+<p>An integer indicating the position of the member whose EOFs are to be displayed. Default 1, 
+corresponding to the first member. Ignored for non multimember grids.</p>
+</td></tr>
+<tr valign="top"><td><code>n.eofs</code></td>
+<td>
+<p>Number of EOFs to be displayed. Default to NULL, indicating that all computed EOFS
+will be represented</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments passed to <code><a href="plotClimatology.html">plotClimatology</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A plot with as many panels as EOFs requested, in the original units of the variable
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other pca: <code><a href="PC2grid.html">PC2grid</a></code>, <code><a href="grid2PCs.html">grid2PCs</a></code>,
+<code><a href="gridFromPCA.html">gridFromPCA</a></code>, <code><a href="prinComp.html">prinComp</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Winter temperature at 850 mb isobaric surface pressure level is loaded (period 1981--2010):
+data("NCEP_Iberia_hus850")
+# PCA analysis, retaining the PCs that explain 90\% of the total variance:
+pca &lt;- prinComp(NCEP_Iberia_hus850, v.exp = .90)
+# Plot of all EOFs
+plotEOF(pca)
+# Plot the first 4 EOFs:
+plotEOF(pca, n.eofs = 4, backdrop.theme = "coastline")
+# Plot just the second EOF (passing further arguments to plotClimatology):
+plotEOF(pca, zcol = 2, backdrop.theme = "coastline", main = "2nd EOF ('zcol = 2')")
+# Example with PCA analysis of a multigrid (multiple variables)
+data("NCEP_Iberia_ta850", "NCEP_Iberia_psl")
+multigrid &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_ta850, NCEP_Iberia_psl)
+# PCA analysis, retaining the first 9 PCs of each variable:
+pca2 &lt;- prinComp(multigrid, n.eofs = 9)
+names(pca2)
+# EOFs for temperature 850mb
+plotEOF(pca2, "ta@850", backdrop.theme = "coastline")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

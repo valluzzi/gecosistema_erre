@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Basic arithmetic operations between grids and numbers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for gridArithmetics {transformeR}"><tr><td>gridArithmetics {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Basic arithmetic operations between grids and numbers</h2>
+
+<h3>Description</h3>
+
+<p>Perform basic arithmetic operations between two or more grids (or factors).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+gridArithmetics(..., operator = "*", template = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Input grids or factors (numbers). The first element must be a grid, the rest could
+be either grids or numbers.</p>
+</td></tr>
+<tr valign="top"><td><code>operator</code></td>
+<td>
+<p>Character string of arithmetic simbols (&quot;+&quot;, &quot;-&quot;, &quot;/&quot;, &quot;*&quot;). The length must 
+be 1 (the same operator is used for all elements in <code>...</code>) or <code>length(...) - 1</code> (See Details).</p>
+</td></tr>
+<tr valign="top"><td><code>template</code></td>
+<td>
+<p>grid from which the structure (dates, variable name, etc..) is kept for 
+the output data (Default is the first grid in <code>...</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Lets imagine that elements in <code>...</code> are A, B and C, where A is a grid and
+B and C are either grids or numbers. If operator is, for example, &quot;+&quot; (or c(&quot;+&quot;, &quot;+&quot;)), 
+then the mathematical expression evaluated by <code>gridArithmetics</code> is: A + B + C. 
+If operator is, for example, <code>c("+", "/")</code>, then the expression is (A + B)/C.
+If we would like to evaluate an expression such as A/(B + C), <code>gridArithmetics</code>
+must be applied two times (see examples).
+</p>
+
+
+<h3>Value</h3>
+
+<p>A grid
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>M. Iturbide
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("CMIP5_Iberia_pr")
+data("EOBS_Iberia_pr")
+cmip5 &lt;- interpGrid(CMIP5_Iberia_pr, getGrid(EOBS_Iberia_pr))
+A &lt;- cmip5 ; B &lt;- EOBS_Iberia_pr; C &lt;- 100
+
+# To evaluate (A - B) / B * C:
+relative.delta &lt;- gridArithmetics(A, B, B, C, 
+                                  operator = c("-", "/", "*"), 
+                                  template = NULL)
+                                  
+# More than one step needed to evaluate an expression of the type B/(A - B):
+grid1 &lt;- gridArithmetics(A, B, operator = "-")
+newgrid &lt;- gridArithmetics(B, grid1, operator = "/")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

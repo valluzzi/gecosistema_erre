@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plots daily/annual series and the annual correlation map of...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for quickDiagnostics {downscaleR}"><tr><td>quickDiagnostics {downscaleR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plots daily/annual series and the annual correlation map of different grid objects</h2>
+
+<h3>Description</h3>
+
+<p>Plots daily/annual series and the annual correlation map of different grid objects
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+quickDiagnostics(obs, raw, downscaled = NULL, location = NULL,
+  type = c("daily", "interannual"), members = NULL, na.tolerance = 0.3,
+  ylim = NULL, main = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obs</code></td>
+<td>
+<p>grid of observations.</p>
+</td></tr>
+<tr valign="top"><td><code>raw</code></td>
+<td>
+<p>grid of model data.</p>
+</td></tr>
+<tr valign="top"><td><code>downscaled</code></td>
+<td>
+<p>Optional. grid of the downscaling output.</p>
+</td></tr>
+<tr valign="top"><td><code>location</code></td>
+<td>
+<p>Coordinates of a location in the geographic domain of 'obs'. 
+If NULL it is randomly chosen from coordinates in 'obs'.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Character value, either <code>"daily"</code> or <code>"interannual"</code>, indicating is the assessment is to
+be performed on a daily or interannual basis.</p>
+</td></tr>
+<tr valign="top"><td><code>members</code></td>
+<td>
+<p>An integer vector indicating <strong>the position</strong> of the members to be subset. 
+If NULL all members are considered when type = &quot;interannual&quot; and one member is randomly chosen when type = &quot;daily&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>na.tolerance</code></td>
+<td>
+<p>proportion of NAs in a grid cell (location) that are allowed to calculate correlation.</p>
+</td></tr>
+<tr valign="top"><td><code>ylim</code></td>
+<td>
+<p>'ylim' argument passed to the time series plot.</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>'main' argument passed to the plot.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Two diagnostic plots with observed, simulated and (possibly) downscaled time series, and a QQ-plot by percentlies.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>M. Iturbide
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+{
+data("VALUE_Iberia_pr")
+data("NCEP_Iberia_pr")
+y &lt;- VALUE_Iberia_pr
+x &lt;- NCEP_Iberia_pr
+x$Data &lt;- x$Data*86400
+quickDiagnostics(obs = y, raw = x, location = c(-2, 43), type = "daily")
+#quickDiagnostics(obs = y, raw = x, location = c(-2, 43), type = "interannual")
+eqm1win &lt;- biasCorrection(y = y, x = x,
+                          method = "eqm",
+                          extrapolation = "none")
+quickDiagnostics(y, x, eqm1win)
+quickDiagnostics(y, x, eqm1win, location = c(-2, 43))
+#quickDiagnostics(obs = y, raw = x, downscaled = eqm1win, 
+# location = c(-2, 43), type = "interannual")
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>downscaleR</em> version 3.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

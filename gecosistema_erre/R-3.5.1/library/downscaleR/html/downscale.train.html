@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Calibration of downscaling methods</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for downscale.train {downscaleR}"><tr><td>downscale.train {downscaleR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Calibration of downscaling methods</h2>
+
+<h3>Description</h3>
+
+<p>Calibration of downscaling methods. Currently analogs, generalized linear models (GLM) and Neural Networks (NN) are available.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+downscale.train(obj, method, condition = NULL, threshold = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p>The object as returned by <code><a href="prepareData.html">prepareData</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Character string indicating the type of method/transfer function. Currently accepted values are <code>"analogs"</code>, <code>"GLM"</code> or <code>"NN"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>condition</code></td>
+<td>
+<p>Inequality operator to be applied to the given <code>"threshold"</code>. Only the days that satisfy the condition will be used for training the model.
+<code>"GT"</code> = greater than the value of <code>threshold</code>, <code>"GE"</code> = greater or equal,
+<code>"LT"</code> = lower than, <code>"LE"</code> = lower or equal than.</p>
+</td></tr>
+<tr valign="top"><td><code>threshold</code></td>
+<td>
+<p>Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument <code>condition</code>. Then condition is set to <code>"GE"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Optional parameters. These parameters are different depending on the method selected. Every parameter has a default value set in the atomic functions in case that no selection is wanted. 
+Everything concerning these parameters is explained in the section <code>Details</code>. 
+However, if wanted, the atomic functions can be seen here: <code><a href="glm.train.html">glm.train</a></code> and <code><a href="../../deepnet/html/nn.train.html">nn.train</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function can downscale in both global and local mode, though not simultaneously. 
+If there is perfect collinearity among predictors, then the matrix will not be invertible and the downscaling will fail.
+We recommend to get rid of the NaN/NA values before calling the function.
+</p>
+<p><strong>Analogs</strong>
+The optional parameters of this method are:
+</p>
+
+<ul>
+<li> <p><code>n.analogs</code> An integer. Number of analogs. Default is 4.
+</p>
+</li>
+<li> <p><code>sel.fun</code> A string. Select a function to apply to the analogs selected for a given observation. Options are 
+&quot;mean&quot;, &quot;wmean&quot; (i.e., weighted mean), &quot;max&quot;, &quot;min&quot;, &quot;median&quot;, &quot;prcXX&quot; 
+(i.e., prc85 means the 85th percentile of the analogs values distribution). Default is &quot;mean&quot;.
+the function applied to the analogs values, (i.e., sel.fun = c(&quot;mean&quot;,&quot;max&quot;,&quot;min&quot;,&quot;median&quot;,&quot;prcXX&quot;), with default &quot;mean&quot;) 
+and the temporal window, (i.e., window = 0).
+</p>
+</li>
+<li> <p><code>window</code> An integer. Window of days removed when selecting analogs. 
+If window = 7, then 7 days after the observation date and the 7 days before the observation date are removed. Default is 0.
+</p>
+</li>
+<li> <p><code>n.random</code> An integer. Choose N random analogs among the closest n.analogs. Default is NULL.
+</p>
+</li></ul>
+
+<p>More information can be found in <code><a href="analogs.train.html">analogs.train</a></code>
+</p>
+<p><strong>Generalized Linear Models (GLM)</strong>
+The optional parameters depends on the <code>fitting</code> optional parameter:
+</p>
+
+<ul>
+<li> <p><code>fitting</code> A string indicating the types of objective functions and how to fit the linear model.
+</p>
+
+<ul>
+<li> <p><code>fitting = NULL</code> In this case the generalized linear model uses the <code><a href="../../stats/html/glm.html">glm</a></code> function to fit the linear model. 
+This is the default option.
+The optional parameters when fitting = NULL are:
+</p>
+
+<ul>
+<li> <p><code>family</code> A string indicating a description of the error distribution. Options are 
+family = c(&quot;gaussian&quot;,&quot;binomial&quot;,&quot;Gamma&quot;,&quot;inverse.gaussian&quot;,&quot;poisson&quot;,&quot;quasi&quot;,&quot;quasibinomial&quot;,&quot;quasipoisson&quot;). 
+The links can be also specified and can be found in <code><a href="../../stats/html/family.html">family</a></code>.
+</p>
+</li>
+<li> <p><code>na.action</code> A function which indicates what should happen when the data contain NAs. 
+The default is set by the na.action setting of options, and is na.fail if that is unset. 
+The ‘factory-fresh’ default is na.omit. Another possible value is NULL, no action. Value na.exclude can be useful.
+</p>
+</li></ul>
+
+</li>
+<li> <p><code>fitting = "stepwise"</code> Indicates a stepwise regression via <code><a href="../../stats/html/glm.html">glm</a></code> and <code><a href="../../stats/html/step.html">step</a></code>.
+The optional parameters are the same than for fitting = NULL. The stepwise performs always a forward selection search stopping
+</p>
+</li>
+<li> <p><code>fitting = c("L1","L2","L1L2","gLASSO")</code>. These four options refer to ridge regression (L1 penalty), lasso regression (L2 penalty),
+elastic-net regression (L1L2 penalty) and group Lasso regression (group L2 penalty). The model is fitted via 
+<code><a href="../../glmnet/html/glmnet.html">glmnet</a></code> and the corresponding penalties are found via <code><a href="../../glmnet/html/cv.glmnet.html">cv.glmnet</a></code>. This function <code><a href="../../glmnet/html/glmnet.html">glmnet</a></code>
+forces by default to standardize predictors, however we have changed it to standardize = FALSE, and standardization should be done prior to 
+the downscaling process. 
+The optional parameters when fitting = c(&quot;L1&quot;,&quot;L2&quot;,&quot;L1L2&quot;,&quot;gLASSO&quot;) are:
+</p>
+
+<ul>
+<li> <p><code>family</code> A string indicating a description of the error distribution. Options are 
+family = c(&quot;gaussian&quot;,&quot;binomial&quot;,&quot;Gamma&quot;,&quot;inverse.gaussian&quot;,&quot;poisson&quot;,&quot;quasi&quot;,&quot;quasibinomial&quot;,&quot;quasipoisson&quot;). 
+The links CAN NOT be specified as the <code><a href="../../glmnet/html/glmnet.html">glmnet</a></code> has not been programmed to handle links.
+However, the default ones can be found in <code><a href="../../stats/html/family.html">family</a></code>. If fitting = &quot;gLASSO&quot; then family must be &quot;mgaussian&quot;.
+</p>
+</li>
+<li> <p><code>offset</code> A vector of length nobs that is included in the linear predictor (a nobs x nc matrix for the &quot;multinomial&quot; family). 
+Useful for the &quot;poisson&quot; family (e.g. log of exposure time), or for refining a model by starting at a current fit. 
+Default is NULL. If supplied, then values must also be supplied to the predict function.
+</p>
+</li></ul>
+
+</li></ul>
+
+<p>There are two things to consider. 
+1) If family = &quot;binomial&quot; then type = &quot;response&quot; when predicting values.
+2) Except for fitting = &quot;MP&quot;, for the rest of the fitting options, the parameter site must be TRUE, unless 
+we want a gLASSO, in this case site must be FALSE.
+</p>
+</li></ul>
+
+<p><strong>Neural Networks</strong>
+Neural network is based on the library <span class="pkg">deepnet</span>. The optional parameters corresponds to those in <code><a href="../../deepnet/html/nn.train.html">nn.train</a></code>
+and are: <code>initW</code> = NULL, <code>initB</code> = NULL, <code>hidden</code> = c(10), <code>activationfun</code> = &quot;sigm&quot;, <code>learningrate</code> = 0.001, <code>momentum</code> = 0.5, 
+<code>learningrate_scale</code> = 1, <code>output</code> = &quot;sigm&quot;, <code>numepochs</code> = 5000, <code>batchsize</code> = 100, <code>hidden_dropout</code> = 0, <code>visible_dropout</code> = 0. The values indicated are the default values.
+</p>
+<p><strong>Help</strong>
+</p>
+<p>If there are still doubts about the optional parameters despite the description here, we encourage to look for further details in the atomic functions: 
+<code><a href="analogs.train.html">analogs.train</a></code>, <code><a href="glm.train.html">glm.train</a></code> and <code><a href="../../deepnet/html/nn.train.html">nn.train</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list of objects that contains the prediction on the train dataset and the model.
+</p>
+
+<ul>
+<li> <p><code>pred</code>: An object with the same structure as the predictands input parameter, but with pred$Data being the predictions and not the observations.
+</p>
+</li>
+<li> <p><code>model</code>: A list with the information of the model: method, coefficients, fitting ...
+</p>
+</li></ul>
+
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bano-Medina
+</p>
+
+
+<h3>See Also</h3>
+
+<p>prepareData for different options to define predictors (local gridboxes, PCs, etc.)
+downscale.predict for prediction for a a test dataset with a trained model for 
+downscale.cv for cross-validation
+<a href="https://github.com/SantanderMetGroup/downscaleR/wiki/training-downscaling-models">downscaleR Wiki</a> for downscaling seasonal forecasting and climate projections.
+</p>
+<p>Other downscaling.functions: <code><a href="downscale.cv.html">downscale.cv</a></code>,
+<code><a href="downscale.predict.html">downscale.predict</a></code>, <code><a href="downscale.html">downscale</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Loading data
+data("VALUE_Iberia_tas")
+y &lt;- VALUE_Iberia_tas
+data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
+x &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+# Preparing the predictors
+data &lt;- prepareData(x = x, y = y, spatial.predictors = list(v.exp = 0.95))
+# Training downscaling methods
+model.analogs &lt;- downscale.train(data, method = "analogs", n.analogs = 1)
+model.regression &lt;- downscale.train(data, method = "GLM",family = gaussian)
+model.nnets &lt;- downscale.train(data, method = "NN", hidden = c(10,5), output = "linear")
+# Plotting the results for station 5
+plot(y$Data[,5],model.analogs$pred$Data[,5], xlab = "obs", ylab = "pred")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>downscaleR</em> version 3.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

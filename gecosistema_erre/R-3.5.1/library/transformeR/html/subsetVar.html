@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract a grid from a multigrid object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for subsetVar {transformeR}"><tr><td>subsetVar {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extract a grid from a multigrid object</h2>
+
+<h3>Description</h3>
+
+<p>Extracts a grid from a multigrid object. Multimember multigrids are supported. Subroutine of subsetGrid.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+subsetVar(grid, var)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>var</code></td>
+<td>
+<p>Character vector indicating the variables(s) to be extracted</p>
+</td></tr>
+<tr valign="top"><td><code>multiGrid</code></td>
+<td>
+<p>Input multigrid to be subset</p>
+</td></tr>
+<tr valign="top"><td><code>drop</code></td>
+<td>
+<p>Logical (default is TRUE). Drop or keep dimensions of length 1.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Argument <code>var</code> is insensitive to the order of the variables, i.e.: variables
+will be always returned in the same order they are in the original multigrid.
+</p>
+<p>An attribute 'subset' with value 'subsetVar' is added to the Variable slot of the output subset.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Either a (multimember)grid or (multimember)multigrid if one ore more variables
+are selected respectively.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other subsetting: <code><a href="getTemporalIntersection.html">getTemporalIntersection</a></code>,
+<code><a href="intersectGrid.spatial.html">intersectGrid.spatial</a></code>,
+<code><a href="intersectGrid.time.html">intersectGrid.time</a></code>,
+<code><a href="intersectGrid.html">intersectGrid</a></code>, <code><a href="overGrid.html">overGrid</a></code>,
+<code><a href="subsetDimension.html">subsetDimension</a></code>, <code><a href="subsetGrid.html">subsetGrid</a></code>,
+<code><a href="subsetMembers.html">subsetMembers</a></code>, <code><a href="subsetRuntime.html">subsetRuntime</a></code>,
+<code><a href="subsetSeason.html">subsetSeason</a></code>, <code><a href="subsetSpatial.html">subsetSpatial</a></code>,
+<code><a href="subsetStation.html">subsetStation</a></code>, <code><a href="subsetYears.html">subsetYears</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: easyVerification matrix to climatological grid conversion</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for easyVeri2grid {transformeR}"><tr><td>easyVeri2grid {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>easyVerification matrix to climatological grid conversion</h2>
+
+<h3>Description</h3>
+
+<p>Convert a xyz-type verification matrix as returned by <code>veriApply</code> to a climatological grid
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+easyVeri2grid(easyVeri.mat, obs.grid, verifun = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>easyVeri.mat</code></td>
+<td>
+<p>A matrix containing the verification measure,
+as returned by <code><a href="../../easyVerification/html/veriApply.html">veriApply</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>obs.grid</code></td>
+<td>
+<p>The grid containing the verifying reference used in the call to <code>veryApply</code>
+producing the score matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>verifun</code></td>
+<td>
+<p>Optional. Character string indicating the value of the <code>verifun</code> argument. Just for 
+a better traceability and metadata completeness.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A climatological grid.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="climatology.html">climatology</a></code>, <code><a href="plotClimatology.html">plotClimatology</a></code>.
+</p>
+<p>Other easyVerification.bridges: <code><a href="easyVeri.signif.html">easyVeri.signif</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

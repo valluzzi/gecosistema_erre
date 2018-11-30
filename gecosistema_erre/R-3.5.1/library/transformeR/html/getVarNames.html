@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get grid variable names</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getVarNames {transformeR}"><tr><td>getVarNames {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get grid variable names</h2>
+
+<h3>Description</h3>
+
+<p>Get the names of the variables of a (multi)grid
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getVarNames(grid, type = c("short", "long"), append.level = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>A grid or station data</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Character. Should either the <code>"short"</code> (default) or the <code>"long"</code> variable name(s) be returned?.
+See Details.</p>
+</td></tr>
+<tr valign="top"><td><code>append.level</code></td>
+<td>
+<p>Append the vertical level to the short name string?. Default to <code>TRUE</code>, ignored when <code>type = "long"</code>).
+See details.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><strong>About short names</strong>
+</p>
+<p>Note that for variables with vertical levels, if the option <code>append.level</code> is set to <code>TRUE</code> (the default),
+the function will &quot;construct&quot; the shortname following the climate4R convention,
+that defines the code of the variable plus its vertical level, separated by a &ldquo;@&rdquo; symbol. 
+This way, when querying grid variable names, the behaviour of <code>getVarNames</code> is different than directly accessing
+the <code>varName</code> element of the grid structure as in, e.g.: <code>grid$Variable$varName</code>. Using <code>getVarNames</code> 
+with <code>append.level = TRUE</code> is recommended in most applications when the variable string is needed.
+</p>
+<p><strong>About long names</strong>
+</p>
+<p>The long name is an optional attribute of a grid (not so the short name), and it is sometimes undefined (particularly in station datasets).
+In this case, the function returns <code>NULL</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A character vector with the variable name(s) in the indicated <code>type</code> format.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other get.helpers: <code><a href="get2DmatCoordinates.html">get2DmatCoordinates</a></code>,
+<code><a href="getCoordinates.html">getCoordinates</a></code>, <code><a href="getDim.html">getDim</a></code>,
+<code><a href="getGridVerticalLevels.html">getGridVerticalLevels</a></code>,
+<code><a href="getGrid.html">getGrid</a></code>, <code><a href="getRefDates.html">getRefDates</a></code>,
+<code><a href="getSeason.html">getSeason</a></code>, <code><a href="getShape.html">getShape</a></code>,
+<code><a href="getTimeResolution.html">getTimeResolution</a></code>,
+<code><a href="getYearsAsINDEX.html">getYearsAsINDEX</a></code>, <code><a href="typeofGrid.html">typeofGrid</a></code>,
+<code><a href="which.leap.html">which.leap</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("CFS_Iberia_pr")
+getVarNames(CFS_Iberia_pr)
+grid &lt;- CFS_Iberia_pr
+getVarNames(CFS_Iberia_pr, "long")
+## Example with a multigrid
+data(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+mg &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+getVarNames(mg)
+# The level can be removed id needed:
+getVarNames(mg, append.level = FALSE)
+mg &lt;- makeMultiGrid(CFS_Iberia_tas, CFS_Iberia_pr)
+getVarNames(mg)
+getVarNames(mg, "long")
+## Example with station data
+data("VALUE_Iberia_tas")
+## The long name is an optional attribute, and might be undefined:
+getVarNames(VALUE_Iberia_tas, "long")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

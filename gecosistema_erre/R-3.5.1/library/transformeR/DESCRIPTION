@@ -1,0 +1,43 @@
+Package: transformeR
+Depends: R(>= 3.1.0)
+Imports: abind, akima, fields, graphics, grDevices, magrittr, parallel,
+        RcppEigen, sp, stats, utils, raster
+Suggests: downscaleR, loadeR, loadeR.ECOMS, visualizeR
+Type: Package
+Title: An R package for climate data manipulation and transformation
+Version: 1.4.2
+Date: 2018-06-21
+Authors@R: as.person(c(
+    "Santander Meteorology Group <http://meteo.unican.es> [cph]",
+    "Jorge Baño Medina <bmedina@ifca.unican.es> [ctb]",
+    "Joaquin Bedia <bediaj@unican.es> [aut, cre]",
+    "Matteo De Felice <matteo.defelice@enea.it> [ctb]",
+    "Jose Manuel Gutierrez <gutierjm@unican.es> [ctb]",
+    "Sixto Herrera <sixto@predictia.es> [ctb]",
+    "Maialen Iturbide <miturbide@ifca.unican.es> [aut]"))
+BugReports: https://github.com/SantanderMetGroup/transformeR/issues
+URL: https://github.com/SantanderMetGroup/transformeR/wiki
+Encoding: UTF-8
+Description: Implements different tools for climate data analysis, visualization and manipulation. It is a building block of the climate4R Bundle (for an overview, see the Climate Services paper in <http://www.meteo.unican.es/en/node/73360>). 
+License: file LICENSE
+LazyData: true
+RoxygenNote: 6.0.1
+Author: Santander Meteorology Group [cph],
+  Jorge Baño Medina [ctb],
+  Joaquin Bedia [aut, cre],
+  Matteo De Felice [ctb],
+  Jose Manuel Gutierrez [ctb],
+  Sixto Herrera [ctb],
+  Maialen Iturbide [aut]
+Maintainer: Joaquin Bedia <bediaj@unican.es>
+Built: R 3.5.1; ; 2018-07-17 15:18:44 UTC; windows
+RemoteType: github
+RemoteHost: https://api.github.com
+RemoteRepo: transformeR
+RemoteUsername: SantanderMetGroup
+RemoteRef: master
+RemoteSha: f6c97efb6c9ccf0d6c232637fdd166dbf20190d3
+GithubRepo: transformeR
+GithubUsername: SantanderMetGroup
+GithubRef: master
+GithubSHA1: f6c97efb6c9ccf0d6c232637fdd166dbf20190d3

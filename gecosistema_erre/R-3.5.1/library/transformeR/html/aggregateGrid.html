@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Flexible grid aggregation along selected dimensions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for aggregateGrid {transformeR}"><tr><td>aggregateGrid {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Flexible grid aggregation along selected dimensions</h2>
+
+<h3>Description</h3>
+
+<p>Aggregates a grid along the target dimensions using user-defined functions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+aggregateGrid(grid, aggr.mem = list(FUN = NULL), aggr.d = list(FUN = NULL),
+  aggr.m = list(FUN = NULL), aggr.y = list(FUN = NULL),
+  aggr.lat = list(FUN = NULL), weight.by.lat = TRUE, aggr.lon = list(FUN =
+  NULL), parallel = FALSE, max.ncores = 16, ncores = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>a grid or multigrid to be aggregated.</p>
+</td></tr>
+<tr valign="top"><td><code>aggr.mem</code></td>
+<td>
+<p>Same as <code>aggr.d</code>, but indicating the function for computing the member aggregation.</p>
+</td></tr>
+<tr valign="top"><td><code>aggr.d</code></td>
+<td>
+<p>Daily aggregation function (for sub-daily data only). A list indicating the name of the
+aggregation function in first place, and other optional arguments to be passed to the aggregation function. See the examples.</p>
+</td></tr>
+<tr valign="top"><td><code>aggr.m</code></td>
+<td>
+<p>Same as <code>aggr.d</code>, but indicating the monthly aggregation function.</p>
+</td></tr>
+<tr valign="top"><td><code>aggr.y</code></td>
+<td>
+<p>Same as <code>aggr.d</code>, but indicating the annual aggregation function.</p>
+</td></tr>
+<tr valign="top"><td><code>aggr.lat</code></td>
+<td>
+<p>Same as <code>aggr.d</code>, indicating the aggregation function to be applied along latitude.</p>
+</td></tr>
+<tr valign="top"><td><code>weight.by.lat</code></td>
+<td>
+<p>Logical. Should latitudinal averages be weighted by the cosine of latitude?.
+Default to <code>TRUE</code>. Ignored if no <code>aggr.lat</code> function is indicated, or a function different from <code>"mean"</code>
+is applied.</p>
+</td></tr>
+<tr valign="top"><td><code>aggr.lon</code></td>
+<td>
+<p>Same as <code>aggr.lat</code>, but for longitude.</p>
+</td></tr>
+<tr valign="top"><td><code>parallel</code></td>
+<td>
+<p>Logical. Should parallel execution be used?</p>
+</td></tr>
+<tr valign="top"><td><code>max.ncores</code></td>
+<td>
+<p>Integer. Upper bound for user-defined number of cores.</p>
+</td></tr>
+<tr valign="top"><td><code>ncores</code></td>
+<td>
+<p>Integer number of cores used in parallel computation. Self-selected number of
+cores is used when <code>ncpus = NULL</code> (the default), or when <code>maxcores</code> exceeds the default <code>ncores</code> value.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><strong>Aggregation function definition</strong>
+</p>
+<p>The aggregation functions are specified in the form of a named list of the type <code>FUN = "function", ...</code>, where
+<code>...</code> are further arguments passes to FUN. This allows for a flexible definition of aggregation functions, that are 
+internally passes to <code><a href="../../base/html/tapply.html">tapply</a></code>. Note that the name of the function is indicated as a character string.
+</p>
+<p><strong>Member aggregation</strong>
+</p>
+<p>The function preserves the metadadata associated with member information (i.e. initialization dates and member names) after
+aggregation. In addition, an attribute indicating the member aggregation function is added to the <code>Variable</code> component.
+</p>
+<p><strong>Temporal aggregation</strong>
+</p>
+<p>To annually or monthly aggregate data, <code>aggr.d</code> and/or <code>aggr.m</code> functions are specified.
+Aggregations need to be specified from bottom to top, so for instance, if the data in the grid is sub-daily
+and <code>aggr.d</code> is not specified, an error will be given for monthly or annual aggregation attempts. Similarly,
+annual aggregations require a previous specification of daily and monthly aggregation, when applicable. Special 
+attributes in the <code>Variable</code> component indicate the aggregation undertaken.
+</p>
+<p>In order to preserve the information of the season in annual aggregations, the attribute <code>season</code> is
+added to the <code>Dates</code> component.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A grid or multigrid aggregated along the chosen dimension(s).
+</p>
+
+
+<h3>Parallel Processing</h3>
+
+<p>Parallel processing is enabled using the <span class="pkg">parallel</span> package. 
+Parallelization is undertaken by a FORK-type parallel socket cluster formed by <code>ncores</code>.
+If <code>ncores</code> is not specified (default), <code>ncores</code> will be one less than the autodetected number of cores.
+The maximum number of cores used for parallel processing can be set with the <code>max.ncores</code> argument, 
+although this will be reset to the auto-detected number of cores minus 1 if this number is exceeded. Note that not all 
+code, but just some critical loops within the function are parallelized.
+</p>
+<p>In practice, parallelization does not always result in smaller execution times, due to the parallel overhead.
+However, parallel computing may potentially provide a significant speedup for the 
+particular case of large multimember datasets or large grids.
+</p>
+<p>Parallel computing is currently not available for Windows machines.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>M. Iturbide, M. de Felice, J. Bedia
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("CFS_Iberia_tas")
+## Aggregating members
+# Ensemble mean
+mn &lt;- aggregateGrid(grid = CFS_Iberia_tas, aggr.mem = list("mean", na.rm = TRUE))
+plotClimatology(climatology(mn, by.member = FALSE),
+                backdrop.theme = "coastline", main = "Ensemble mean tmax climatology")
+# Ensemble 90th percentile
+ ens90 &lt;- aggregateGrid(grid = CFS_Iberia_tas,
+                        aggr.mem = list(FUN = quantile, probs = 0.9, na.rm = TRUE))
+plotClimatology(climatology(ens90, by.member = FALSE),
+                backdrop.theme = "coastline", main = "Ensemble 90th percentile tmax climatology")
+
+## Monthly aggregation
+monthly.mean &lt;- aggregateGrid(CFS_Iberia_tas, aggr.m = list(FUN = mean, na.rm = TRUE))
+plotClimatology(climatology(monthly.mean), backdrop.theme = "coastline",
+                main = "Mean tmax climatology")
+
+## Several dimensions ca be aggregated in one go:
+mm.mean &lt;- aggregateGrid(CFS_Iberia_tas,
+                         aggr.mem = list(FUN = "mean", na.rm = TRUE),
+                         aggr.m = list(FUN = "mean", na.rm = TRUE))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

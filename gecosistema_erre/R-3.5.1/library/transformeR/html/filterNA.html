@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Remove missing values from grids</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for filterNA {transformeR}"><tr><td>filterNA {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Remove missing values from grids</h2>
+
+<h3>Description</h3>
+
+<p>Removes the dates for all grid points whenever there exists missing values such as NaN or NA.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+filterNA(grid)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>The input grid to be filtered.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function also takes care of adjusting dates and other relevant metadata (via the internal <code><a href="subsetDimension.html">subsetDimension</a></code>).
+</p>
+
+
+<h3>Value</h3>
+
+<p>A new grid object without missing values
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bano-Medina, J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other downscaling.helpers: <code><a href="convert2bin.html">convert2bin</a></code>,
+<code><a href="makeMultiGrid.html">makeMultiGrid</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Check if the dataset contains missing values (YES):
+anyNA(VALUE_Iberia_pr$Data)
+getShape(VALUE_Iberia_pr)
+na.filtered &lt;- filterNA(VALUE_Iberia_pr)
+# Check if the dataset contains missing values (NO):
+anyNA(na.filtered$Data)
+getShape(na.filtered)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Climatological map stippling</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for map.stippling {transformeR}"><tr><td>map.stippling {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Climatological map stippling</h2>
+
+<h3>Description</h3>
+
+<p>Create a points panel layout to add to <code>plotClimatology</code>.
+Typically needed to stipple significant points in climatologies, or other types of coordinates
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+map.stippling(clim, threshold = 0.05, condition = "LT", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>clim</code></td>
+<td>
+<p>A climatology. This can be for instance a verification climatology as produced by <code><a href="easyVeri2grid.html">easyVeri2grid</a></code>.
+This often contains p-values, but not necessarily.</p>
+</td></tr>
+<tr valign="top"><td><code>threshold</code></td>
+<td>
+<p>Reference threshold value to specify stippling points. Default to <code>0.05</code>, 
+in combination with <code>condition = "LT"</code>, as tipically used for stippling statistically significant
+values (p-values).</p>
+</td></tr>
+<tr valign="top"><td><code>condition</code></td>
+<td>
+<p>Inequality operator to be applied considering the given <code>threshold</code>.
+<code>"GT"</code> = greater than the value of <code>threshold</code>, <code>"GE"</code> = greater or equal,
+<code>"LT"</code> = lower than, <code>"LE"</code> = lower or equal than. Default to <code>"LT"</code> (see the rationale in the next argument).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further optional style arguments (see the examples).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function generates a <code>"sp.points"</code> layout list. Further formatting arguments can be passed here.
+For further details and examples see the help of <code><a href="../../sp/html/spplot.html">spplot</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with a <code>SpatialPoints</code> object, 
+along with optional style arguments like <code>col</code>, <code>pch</code>, <code>cex</code> etc., 
+to be passed to the <code>sp.layout</code> argument in <code>plotClimatology</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plotClimatology.html">plotClimatology</a></code>, to which its output is passed.
+<code><a href="map.lines.html">map.lines</a></code>, for further map customizations.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("CFS_Iberia_tas")
+p90clim &lt;- climatology(CFS_Iberia_tas,
+                       by.member = FALSE,
+                       clim.fun = list("FUN" = quantile, prob = .9))
+plotClimatology(p90clim, backdrop.theme = "coastline",
+                main = "CFSv2 Ensemble mean Tmean 90th percentile (July 2001)")
+
+# We want to highlight the grid points with a 90th percentile &gt; 25.5 degrees, 
+# on top of the Tmean model climatology:
+pts &lt;- map.stippling(p90clim, threshold = 15.5, condition = "GT")
+plotClimatology(climatology(CFS_Iberia_tas),
+                backdrop.theme = "coastline",
+                sp.layout = list(pts))
+
+# Some useful parameters that can be passed to the layout list:
+pts &lt;- map.stippling(p90clim, threshold = 15.5, condition = "GT",
+                     pch = 19, # dots instead of default crosses
+                     col = "black", # black dots
+                     cex = .1) # point expansion factor (to make them very small)
+plotClimatology(climatology(CFS_Iberia_tas),
+                backdrop.theme = "coastline",
+                sp.layout = list(pts))
+
+# Suppose we want the stippling just in the first and fifth panels, for instance:
+pts &lt;- map.stippling(p90clim, threshold = 15.5, condition = "GT",
+                     pch = 19, col = "black", cex = .1,
+                     which = c(1, 5)) # which controls in which panel(s) the points are displayed
+plotClimatology(climatology(CFS_Iberia_tas),
+                backdrop.theme = "coastline",
+                sp.layout = list(pts))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Variance scaling of temperature</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for variance {downscaleR}"><tr><td>variance {downscaleR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Variance scaling of temperature</h2>
+
+<h3>Description</h3>
+
+<p>Implementation of Variance scaling of temperature method for bias correction
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+variance(o, p, s, precip)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>o</code></td>
+<td>
+<p>A vector (e.g. station data) containing the observed climate data for the training period</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>A vector containing the simulated climate by the model for the training period.</p>
+</td></tr>
+<tr valign="top"><td><code>s</code></td>
+<td>
+<p>A vector containing the simulated climate for the variable used in <code>p</code>, but considering the test period.</p>
+</td></tr>
+<tr valign="top"><td><code>precip</code></td>
+<td>
+<p>Logical indicating if o, p, s is temperature data.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>B. Szabo-Takacs
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>downscaleR</em> version 3.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

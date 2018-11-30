@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Complete missing dimensions of Grid objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for redim {transformeR}"><tr><td>redim {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Complete missing dimensions of Grid objects</h2>
+
+<h3>Description</h3>
+
+<p>Add missing dimensions to the 'Data' array as singletons. For internal usage mainly.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+redim(grid, member = TRUE, runtime = FALSE, var = FALSE, loc = FALSE,
+  drop = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>member</code></td>
+<td>
+<p>logical. Add 'member' dimension (default = TRUE)</p>
+</td></tr>
+<tr valign="top"><td><code>runtime</code></td>
+<td>
+<p>logical. Add 'runtime' dimension (default = FALSE)</p>
+</td></tr>
+<tr valign="top"><td><code>var</code></td>
+<td>
+<p>logical. Add 'var' dimension (default = FALSE)</p>
+</td></tr>
+<tr valign="top"><td><code>loc</code></td>
+<td>
+<p>logical. Only if <code>obj</code> is a stations dataset. If TRUE, the <code>"loc"</code> 
+dimension is not replaced by fake <code>"lat"</code> and <code>"lon"</code> dimensions (default is FALSE).</p>
+</td></tr>
+<tr valign="top"><td><code>drop</code></td>
+<td>
+<p>logical. Drop dimensions of length = 1 (default = FALSE)</p>
+</td></tr>
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p>A regular or irregular (e.g. station data) grid</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function does not handle multigrids (i.e. <code>"var"</code> dimension).
+Thus, multigrids need to be subsetted along <code>"var"</code> prior to redimensioning via <code><a href="subsetGrid.html">subsetGrid</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The same object with all the dimensions (i.e. member, time, loc)
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>M. Iturbide, J. Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other internal.helpers: <code><a href="array3Dto2Dmat.stations.html">array3Dto2Dmat.stations</a></code>,
+<code><a href="array3Dto2Dmat.html">array3Dto2Dmat</a></code>,
+<code><a href="bindGrid.member.html">bindGrid.member</a></code>,
+<code><a href="bindGrid.spatial.html">bindGrid.spatial</a></code>,
+<code><a href="bindGrid.time.html">bindGrid.time</a></code>, <code><a href="bindGrid.html">bindGrid</a></code>,
+<code><a href="grid3Dto2Dmatrix.html">grid3Dto2Dmatrix</a></code>,
+<code><a href="mat2Dto3Darray.stations.html">mat2Dto3Darray.stations</a></code>,
+<code><a href="sortDim.spatial.html">sortDim.spatial</a></code>, <code><a href="sortDim.time.html">sortDim.time</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("EOBS_Iberia_tas")
+getShape(EOBS_Iberia_tas)
+a &lt;- redim(EOBS_Iberia_tas)
+getShape(a)
+b &lt;- redim(EOBS_Iberia_tas, var = TRUE)
+getShape(b)
+# This one is probably never needed, but for illustration:
+y &lt;- redim(EOBS_Iberia_tas, member = FALSE, var = TRUE)
+getShape(y)
+# 'drop = TRUE' performs the reverse operation:
+z &lt;- redim(b, drop = TRUE)
+getShape(z)
+
+# Example with station data
+data("VALUE_Iberia_pr")
+getShape(VALUE_Iberia_pr)
+# By default, the internal data array is converted to the time.lat-lon structure.
+# This is a conveninet behaviour for internal usage:
+getShape(redim(VALUE_Iberia_pr, member = TRUE))
+# Use the argument 'loc=TRUE' to avoid this behaviour:
+getShape(redim(VALUE_Iberia_pr, member = TRUE, loc = TRUE))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

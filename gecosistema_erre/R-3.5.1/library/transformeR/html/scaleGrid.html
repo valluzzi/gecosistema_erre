@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Grid scaling</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for scaleGrid {transformeR}"><tr><td>scaleGrid {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Grid scaling</h2>
+
+<h3>Description</h3>
+
+<p>Scale a grid (or compute anomalies)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+scaleGrid(grid, base = NULL, ref = NULL, clim.fun = list(FUN = "mean",
+  na.rm = TRUE), by.member = TRUE, time.frame = c("none", "monthly",
+  "daily"), spatial.frame = c("gridbox", "field"), type = "center",
+  parallel = FALSE, max.ncores = 16, ncores = NULL,
+  skip.season.check = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>Input grid to be rescaled</p>
+</td></tr>
+<tr valign="top"><td><code>base</code></td>
+<td>
+<p>Reference baseline whose climatology will be subtracted to the input grid. If <code>NULL</code> (the default),
+the climatology is directly computed from the input <code>grid</code> via <code><a href="climatology.html">climatology</a></code>, either member-by-member
+or using the ensemble mean climatology, as specified by the <code>by.member</code> flag. Note that <code>base</code> 
+must NOT be a climatology (the base climatology is internally calculated via the argument <code>clim.fun</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>ref</code></td>
+<td>
+<p>Reference grid. After subtracting to grid its climatology (as defined by <code>grid.clim</code>), the mean
+climatology of this additional grid is added. Default to NULL, so no reference grid is used.</p>
+</td></tr>
+<tr valign="top"><td><code>clim.fun</code></td>
+<td>
+<p>Function to compute the climatology. Default to mean. 
+See <code><a href="climatology.html">climatology</a></code> for details on function definition.</p>
+</td></tr>
+<tr valign="top"><td><code>by.member</code></td>
+<td>
+<p>Logical. In case of multimember grids, should the climatology be computed sepparately
+for each member (<code>by.member=TRUE</code>), or a single climatology calculated from the ensemble mean
+(<code>by.member=FALSE</code>)?. Default to <code>TRUE</code>. Argument passed to <code><a href="climatology.html">climatology</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>time.frame</code></td>
+<td>
+<p>Character indicating the time frame to perform the scaling. Possible values are
+<code>"none"</code>, which considers the climatological mean of the whole period given in 
+<code>base</code> and/or <code>ref</code>, <code>"monthly"</code>, that performs the calculation on a monthly basis
+and <code>"daily"</code>, for a julian day-based approach. See details.</p>
+</td></tr>
+<tr valign="top"><td><code>spatial.frame</code></td>
+<td>
+<p>Character string indicating whether to perform the local scaling considering the climatolopgical value 
+at the field scale (<code>"field"</code>) or per gridbox (<code>"gridbox"</code>, the default).</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Character string. Either <code>"center"</code>, <code>"standardize"</code> or <code>"ratio"</code>, depending on wheter the correction factor are anomalies (e.g. temperature...),
+estandardized anomalies or applied as a ratio (e.g. precipitation, wind speed...). See details</p>
+</td></tr>
+<tr valign="top"><td><code>parallel</code></td>
+<td>
+<p>Logical. Should parallel execution be used?</p>
+</td></tr>
+<tr valign="top"><td><code>max.ncores</code></td>
+<td>
+<p>Integer. Upper bound for user-defined number of cores.</p>
+</td></tr>
+<tr valign="top"><td><code>ncores</code></td>
+<td>
+<p>Integer number of cores used in parallel computation. Self-selected number of
+cores is used when <code>ncpus = NULL</code> (the default), or when <code>maxcores</code> exceeds the default <code>ncores</code> value.</p>
+</td></tr>
+<tr valign="top"><td><code>skip.season.check</code></td>
+<td>
+<p>Logical flag. Should the internal checker <code><a href="checkSeason.html">checkSeason</a></code> be skipped?. By
+default, the function undertakes an automatic seasonal check. This can be skipped if needed, mainly for internal use
+(e.g. in cross-validation setups)</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>In the <code>type = "center"</code> set up the reference grid (<code>ref</code>) is used to correct the input grid, as follows:
+</p>
+<p style="text-align: center;"><i>grid'_{t} = grid - base_{clim} + ref_{clim}</i></p>
+
+<p>In the case of <code>type = "standardize"</code>:
+</p>
+<p style="text-align: center;"><i>grid'_{t} = (grid - base_{clim})/ base_{sd} * ref_{sd} + ref_{clim}</i></p>
+
+<p>In the case of <code>type = "ratio"</code>:
+</p>
+<p style="text-align: center;"><i>grid'_{t} = (grid / base_{clim}) * ref_{clim}</i></p>
+
+<p>, where <em>grid'_t</em> is each time slice <em>t</em> of the input grid, and <em>base_clim</em> corresponds to the baseline climatology (by default the grid climatology), <em>base_sd</em> is the standard deviation of the baseline climate signal,thus yielding an anomaly
+w.r.t. the base, <em>ref_clim</em> is a reference climatological value added to the previously calculated anomaly and <em>ref_sd</em> is the standard deviation of the reference climate signal. The <code>"center"</code> or <code>"standardize"</code> version
+is preferably applied to unbounded variables (e.g. temperature) and the <code>"ratio"</code> to variables with a lower bound 
+(e.g. precipitation, because it also preserves the frequency). 
+</p>
+<p>Depending on the value of the argument <code>time.frame</code>, the baseline and reference climatologies are calculated for
+the whole season (<code>time.frame = "none"</code>), month by month <code>time.frame = "monthly"</code> 
+or by day-of-the-year (julian days) (<code>time.frame = "daily"</code>). Thus, 
+if both <code>base</code> and <code>ref</code> are set to <code>NULL</code>, the output grid corresponds to the anomaly field of the 
+input <code>grid</code> w.r.t. its own mean. The way <em>base_clim</em> and <em>ref_clim_grid</em> are computed in case of multimember grids is controlled
+by the argument <code>by.member</code>. By default the climatological mean is used, but this can be changed
+by the user through the argument <code>clim.fun</code>, that is passed to <code><a href="climatology.html">climatology</a></code>.
+</p>
+<p>The <code>ref</code> usually corresponds to the control (historical, 20C3M...) run of the GCM in the training period in climate change applications,
+or the hindcast data for the training period in s2d applications. Note that by default <code>ref = NULL</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A locally scaled grid
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J. Bedia
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## ANOMALIES
+data("NCEP_Iberia_psl")
+# Define average aggregation function
+f = list(FUN = "mean", na.rm = TRUE)
+psl &lt;- aggregateGrid(NCEP_Iberia_psl, aggr.y = f) # get interannual DJF series
+
+## When 'base' and 'ref' are not supplied,
+## the input grid climatology (by default the mean) is subtracted, thus yielding anomalies:
+psl.anom &lt;- scaleGrid(psl)
+# spatial aggregation of the output (for plotting the time series)
+psl.anom.iberia &lt;- aggregateGrid(psl.anom, aggr.lat = f, aggr.lon = f)
+plot(getYearsAsINDEX(psl.anom.iberia), psl.anom.iberia$Data, ty = 'b',
+     ylab = "MSLP anomalies (Pa)", xlab = "year",
+     main = "NCEP Reanalysis - Mean SLP anomalies (DJF)")
+grid()
+abline(h = 0, lty = 2, col = "blue")
+# In the particular case of multimember grids, the anomalies are computed for each member
+# by subtracting either their own mean (by.member = TRUE) or the
+# multimember mean climatology (by.member = FALSE)
+data("CFS_Iberia_tas")
+a &lt;- scaleGrid(CFS_Iberia_tas, by.member = FALSE)
+aa &lt;- aggregateGrid(a, aggr.lat = f, aggr.lon = f, aggr.m = f, aggr.y = f)
+# Example, member 4 time series
+plot(as.Date(getRefDates(aa)), aa$Data[4,], ty = "o", xlab = "Date",
+     ylab = "Tmean anomaly (degC)", main = "Tmean DJF anomalies, Member 4")
+abline(h = 0, lty = 2, col = "blue")
+grid()
+b &lt;- scaleGrid(CFS_Iberia_tas, by.member = TRUE) # almost identical in this case
+bb &lt;- aggregateGrid(b, aggr.lat = f, aggr.lon = f, aggr.m = f, aggr.y = f)
+lines(as.Date(getRefDates(aa)), bb$Data[4,], col = "red", ty = "l")
+legend("bottomright", c("by.member = FALSE", "by.member = TRUE"), lty = 1, col = c(1,2))
+
+# In this example, the anomalies are calculated using a different period specifying a "base".
+# Note that "base" could also be a grid of a different dataset, for instance a 
+# reanalysisdata(EOBS_Iberia_tas)
+grid &lt;- subsetGrid(EOBS_Iberia_tas, years = 1999:2000)
+base &lt;- subsetGrid(EOBS_Iberia_tas, years = 1998)
+lc &lt;- scaleGrid(grid = grid, base = base)
+plot(lc$Data[,,15,15], ty = 'l', ylim = c(-10,10),
+     xlab = "time", ylab = "Anomaly (degC)",
+     main = "Anomalies w.r.t. 1998")
+abline(h = 0, lty = 2, col = "grey30")
+str(lc)
+# The anomalies are calculated on a monthly basis using the 'time.frame' argument:
+lc.m &lt;- scaleGrid(grid = grid, base = base, time.frame = "monthly")
+lines(lc.m$Data[,,,15,15], col = "red")
+lc.d &lt;- scaleGrid(grid = grid, base = base, time.frame = "daily")
+lines(lc.d$Data[,,,15,15], col = "blue")
+legend("topleft", c("none", "monthly","daily"), title = "'time.frame'",
+       lty = 1, col = c(1,2,4), bty = "n")
+
+# An example in which the reference climatology is added to the anomalies:
+# (not quite meaningful, though)
+grid &lt;- subsetGrid(EOBS_Iberia_tas, years = 1999)
+base &lt;- subsetGrid(EOBS_Iberia_tas, years = 1998)
+ref &lt;- subsetGrid(EOBS_Iberia_tas, years = 2000)
+lc.ref &lt;- scaleGrid(grid = grid, base = base, ref = ref)
+lc.ref.m &lt;- scaleGrid(grid = grid, base = base, ref = ref, time.frame = "monthly")
+plot(grid$Data[,15,15], ty = "l", ylim = c(-7.5,10))
+lines(lc.ref$Data[,,15,15], col = "blue")
+lines(lc.ref.m$Data[,,,15,15], col = "red")
+
+# An example using the "ratio" type:
+data("EOBS_Iberia_pr")
+grid &lt;- subsetGrid(EOBS_Iberia_pr, years = 1999)
+base &lt;- subsetGrid(EOBS_Iberia_pr, years = 1998)
+ref &lt;- subsetGrid(EOBS_Iberia_pr, years = 2000)
+fun &lt;- list(FUN = "sum")
+# We plot the climatologies (total accumulated precip) to have a visual comparison of
+# the input grid, the grid used as base and the reference
+mg &lt;- makeMultiGrid(climatology(grid, clim.fun = fun),
+                    climatology(base, clim.fun = fun),
+                    climatology(ref, clim.fun = fun), skip.temporal.check = TRUE)
+plotClimatology(mg, names.attr = c("input_grid", "base", "ref"))
+# Note that for precipitation we use a scaling factor rather than an addition:
+grid.corr &lt;- scaleGrid(grid = grid, base = base, ref = ref,
+                          time.frame = "monthly", type = "ratio")
+mg.corr &lt;- makeMultiGrid(climatology(grid, clim.fun = fun), climatology(grid.corr, clim.fun = fun))
+plotClimatology(mg.corr, at = seq(0,350,10), names.attr = c("Raw","Scaled"))
+# An example using the "standardize" type:
+data("EOBS_Iberia_pr")
+grid &lt;- subsetGrid(EOBS_Iberia_pr, years = 1999)
+base &lt;- subsetGrid(EOBS_Iberia_pr, years = 1998)
+ref &lt;- subsetGrid(EOBS_Iberia_pr, years = 2000)
+grid.corr &lt;- scaleGrid(grid = grid, base = NULL, ref = NULL,
+                       type = "standardize")
+head(apply(grid.corr$Data,MARGIN = c(3,4),mean))
+head(apply(grid.corr$Data,MARGIN = c(3,4),sd))
+                       
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

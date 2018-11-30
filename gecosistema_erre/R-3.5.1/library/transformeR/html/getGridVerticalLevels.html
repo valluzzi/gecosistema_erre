@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get grid vertical levels</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getGridVerticalLevels {transformeR}"><tr><td>getGridVerticalLevels {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get grid vertical levels</h2>
+
+<h3>Description</h3>
+
+<p>A helper function that returns a vector of the variable(s) vertical levels
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getGridVerticalLevels(grid, var.index = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>Input grid</p>
+</td></tr>
+<tr valign="top"><td><code>var.index</code></td>
+<td>
+<p>A vector of indices indicating the positions of the variables whose level will be returned.
+This can be either an integer vector of positions, or a character vector with the short names of the variables contained
+in the multigrid (see the <code><a href="getVarNames.html">getVarNames</a></code> helper for more details). Default to <code>NULL</code> (levels of all variables)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A (short-)named vector with the vertical levels of the (multi)grid variable(s)
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other get.helpers: <code><a href="get2DmatCoordinates.html">get2DmatCoordinates</a></code>,
+<code><a href="getCoordinates.html">getCoordinates</a></code>, <code><a href="getDim.html">getDim</a></code>,
+<code><a href="getGrid.html">getGrid</a></code>, <code><a href="getRefDates.html">getRefDates</a></code>,
+<code><a href="getSeason.html">getSeason</a></code>, <code><a href="getShape.html">getShape</a></code>,
+<code><a href="getTimeResolution.html">getTimeResolution</a></code>,
+<code><a href="getVarNames.html">getVarNames</a></code>, <code><a href="getYearsAsINDEX.html">getYearsAsINDEX</a></code>,
+<code><a href="typeofGrid.html">typeofGrid</a></code>, <code><a href="which.leap.html">which.leap</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("CFS_Iberia_hus850")
+getGridVerticalLevels(CFS_Iberia_hus850)
+# Surface variables usually have an undefined vertical level &lt;NA&gt;
+data("EOBS_Iberia_tas")
+getGridVerticalLevels(EOBS_Iberia_tas)
+
+data("NCEP_Iberia_hus850")
+data("NCEP_Iberia_psl")
+data("NCEP_Iberia_ta850")
+mg &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+getGridVerticalLevels(mg)
+# Use of var.index to select some variables:
+# either by their shortname...
+getGridVerticalLevels(mg, var.index = c("hus@850","ta@850"))
+# ... or by index position in the multigrid
+getGridVerticalLevels(mg, var.index = c(1,3))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

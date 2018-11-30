@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Seasonal check</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for checkSeason {transformeR}"><tr><td>checkSeason {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Seasonal check</h2>
+
+<h3>Description</h3>
+
+<p>Check the consistency of seasons across the input grids
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+checkSeason(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Input grids to be compared</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>In case of seasonal inconsistency of any of the inputs grids, the function stops the execution 
+of the current expression, with an error message.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getSeason.html">getSeason</a></code>
+</p>
+<p>Other check.helpers: <code><a href="checkDim.html">checkDim</a></code>,
+<code><a href="checkVarNames.html">checkVarNames</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("EOBS_Iberia_tas")
+data("EOBS_Iberia_pr")
+grid1 &lt;- subsetGrid(EOBS_Iberia_tas, season = 1)
+grid2 &lt;- subsetGrid(EOBS_Iberia_pr, season = 1)
+checkSeason(grid1, grid2) # ok, go on
+
+try(checkSeason(grid1, grid2, EOBS_Iberia_tas)) # oops
+
+# However note that it is insensitive to the level of temporal aggregation:
+agg &lt;- aggregateGrid(EOBS_Iberia_tas, aggr.m = list(FUN = "mean", na.rm = TRUE))
+identical(getSeason(agg), getSeason(EOBS_Iberia_tas))
+checkSeason(agg, EOBS_Iberia_tas)
+
+#Station data
+data("VALUE_Iberia_tas")
+data("VALUE_Iberia_pr")
+checkSeason(VALUE_Iberia_tas, VALUE_Iberia_pr)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

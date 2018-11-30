@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Bias correction methods</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for biasCorrection {downscaleR}"><tr><td>biasCorrection {downscaleR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Bias correction methods</h2>
+
+<h3>Description</h3>
+
+<p>Implementation of several standard bias correction methods
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+biasCorrection(y, x, newdata = NULL, precipitation = FALSE,
+  method = c("delta", "scaling", "eqm", "pqm", "gpqm", "loci"),
+  cross.val = c("none", "loo", "kfold"), folds = NULL, window = NULL,
+  scaling.type = c("additive", "multiplicative"),
+  fitdistr.args = list(densfun = "normal"), wet.threshold = 1,
+  n.quantiles = NULL, extrapolation = c("none", "constant"), theta = 0.95,
+  join.members = FALSE, parallel = FALSE, max.ncores = 16,
+  ncores = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>A grid or station data containing the observed climate data for the training period</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A grid containing the simulated climate by the model for the training period. This can be either
+the same variable as <code>obs</code>, in the case of model calibration (bias correction and related techniques) or MOS (model
+output statistics) approaches, or a set of predictors in the case of <em>perfect prog</em> downscaling approaches (possibly
+after principal component analysis via the <code><a href="../../transformeR/html/prinComp.html">prinComp</a></code> output).</p>
+</td></tr>
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>A grid containing the simulated climate for the variables used in <code>x</code>, but considering the test period.</p>
+</td></tr>
+<tr valign="top"><td><code>precipitation</code></td>
+<td>
+<p>Logical indicating if the data to be corrected is precipitation data.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>method applied. Current accepted values are <code>"eqm"</code>, <code>"delta"</code>,
+<code>"scaling"</code>, <code>"pqm"</code> and <code>"gpqm"</code> <code>"variance"</code>,<code>"loci"</code> and <code>"ptr"</code>. See details.</p>
+</td></tr>
+<tr valign="top"><td><code>cross.val</code></td>
+<td>
+<p>Should cross-validation be performed? methods available are leave-one-out (&quot;loo&quot;) 
+and k-fold (&quot;kfold&quot;) on an annual basis. The default option (&quot;none&quot;) does not perform cross-validation.</p>
+</td></tr>
+<tr valign="top"><td><code>folds</code></td>
+<td>
+<p>Only requiered if cross.val = &quot;kfold&quot;. A list of vectors, each containing the years to be grouped in 
+the corresponding fold.</p>
+</td></tr>
+<tr valign="top"><td><code>window</code></td>
+<td>
+<p>vector of length = 2 (or 1) specifying the time window width used to calibrate and the 
+target days (days that are being corrected). If the window length = 1, the window width is no larger than the 
+target days. The window is centered on the target day/s (window width &gt;= target days). 
+Default to <code>NULL</code>, which considers the whole period available.</p>
+</td></tr>
+<tr valign="top"><td><code>scaling.type</code></td>
+<td>
+<p>Character indicating the type of the scaling method. Options are <code>"additive"</code> (default)
+or <code>"multiplicative"</code> (see details). This argument is ignored if <code>"scaling"</code> is not 
+selected as the bias correction method.</p>
+</td></tr>
+<tr valign="top"><td><code>fitdistr.args</code></td>
+<td>
+<p>Further arguments passed to function <code><a href="../../MASS/html/fitdistr.html">fitdistr</a></code> 
+(<code>densfun</code>, <code>start</code>, <code>...</code>). Only used when applying the &quot;pqm&quot; method 
+(parametric quantile mapping). Please, read the <code><a href="../../MASS/html/fitdistr.html">fitdistr</a></code> help 
+document  carefully before setting the parameters in <code>fitdistr.args</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>wet.threshold</code></td>
+<td>
+<p>The minimum value that is considered as a non-zero precipitation. Ignored for
+<code>varcode</code> values different from <code>"pr"</code>. Default to 1 (assuming mm). See details on bias correction for precipitation.</p>
+</td></tr>
+<tr valign="top"><td><code>n.quantiles</code></td>
+<td>
+<p>Integer indicating the number of quantiles to be considered when method = &quot;eqm&quot;. Default is NULL, 
+that considers all quantiles, i.e. <code>n.quantiles = length(x[i,j])</code> (being <code>i</code> and <code>j</code> the coordinates in a single location).</p>
+</td></tr>
+<tr valign="top"><td><code>extrapolation</code></td>
+<td>
+<p>Character indicating the extrapolation method to be applied to correct values in
+<code>newdata</code> that are out of the range of <code>x</code>. Extrapolation is applied only to the <code>"eqm"</code> method, 
+thus, this argument is ignored if other bias correction method is selected. Default is <code>"none"</code> (do not extrapolate).</p>
+</td></tr>
+<tr valign="top"><td><code>theta</code></td>
+<td>
+<p>numeric indicating  upper threshold (and lower for the left tail of the distributions, if needed) 
+above which precipitation (temperature) values are fitted to a Generalized Pareto Distribution (GPD). 
+Values below this threshold are fitted to a gamma (normal) distribution. By default, 'theta' is the 95th 
+percentile (5th percentile for the left tail). Only for <code>"gpqm"</code> method.</p>
+</td></tr>
+<tr valign="top"><td><code>join.members</code></td>
+<td>
+<p>Logical indicating whether members should be corrected independently (<code>FALSE</code>, the default),
+or joined before performing the correction (<code>TRUE</code>). It applies to multimember grids only (otherwise ignored).</p>
+</td></tr>
+<tr valign="top"><td><code>parallel</code></td>
+<td>
+<p>Logical. Should parallel execution be used?</p>
+</td></tr>
+<tr valign="top"><td><code>max.ncores</code></td>
+<td>
+<p>Integer. Upper bound for user-defined number of cores.</p>
+</td></tr>
+<tr valign="top"><td><code>ncores</code></td>
+<td>
+<p>Integer number of cores used in parallel computation. Self-selected number of
+cores is used when <code>ncpus = NULL</code> (the default), or when <code>maxcores</code> exceeds the default <code>ncores</code> value.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The methods available are <code>"eqm"</code>, <code>"delta"</code>, 
+<code>"scaling"</code>, <code>"pqm"</code>, <code>"gpqm"</code><code>"loci"</code>, 
+<code>"ptr"</code>  (the four latter used only for precipitation) and 
+<code>"variance"</code> (only for temperature).
+</p>
+<p>These are next briefly described: 
+</p>
+<p><strong>Delta</strong>
+</p>
+<p>This method consists on adding to the observations the mean change signal (delta method).
+This method is applicable to any kind of variable but it is preferable to avoid it for bounded variables
+(e.g. precipitation, wind speed, etc.) because values out of the variable range could be obtained
+(e.g. negative wind speeds...). This method corresponds to case g=1 and f=0 in Amengual et al. 2012. 
+</p>
+<p><strong>Scaling</strong>
+</p>
+<p>This method consists on scaling the simulation  with the difference (additive) or quotient (multiplicative) 
+between the observed and simulated means in the train period. The <code>additive</code> or <code>multiplicative</code>
+correction is defined by parameter <code>scaling.type</code> (default is <code>additive</code>).
+The additive version is preferably applicable to unbounded variables (e.g. temperature) 
+and the multiplicative to variables with a lower bound (e.g. precipitation, because it also preserves the frequency). 
+</p>
+<p><strong>eqm</strong>
+</p>
+<p>Empirical Quantile Mapping. This is a very extended bias correction method which consists on calibrating the simulated Cumulative Distribution Function (CDF) 
+by adding to the observed quantiles both the mean delta change and the individual delta changes in the corresponding quantiles. 
+This is equivalent to f=g=1 in Amengual et al. 2012. This method is applicable to any kind of variable.
+</p>
+<p><strong>pqm</strong>
+</p>
+<p>Parametric Quantile Mapping. It is based on the initial assumption that both observed and simulated intensity distributions are well approximated by a given distribution
+(see <code><a href="../../MASS/html/fitdistr.html">fitdistr</a></code> to check available distributions), therefore is a parametric q-q map that uses the theorical instead of the empirical distribution.
+For instance, the gamma distribution is described in Piani et al. 2010 and is applicable to precipitation. Other example is the weibull distribution, which
+is applicable to correct wind data (Tie et al. 2014).
+</p>
+<p><strong>gpqm</strong>
+</p>
+<p>Generalized Quantile Mapping (described in Gutjahr and Heinemann 2013) is also a parametric quantile mapping (see
+method 'pqm') but using two teorethical distributions, the gamma distribution and Generalized Pareto Distribution (GPD).
+By default, It applies a gamma distribution to values under the threshold given by the 95th percentile 
+(following Yang et al. 2010) and a general Pareto distribution (GPD) to values above the threshold. the threshold above 
+which the GPD is fitted is the 95th percentile of the observed and the predicted wet-day distribution, respectively. 
+The user can specify a different threshold by modifying the parameter theta. It is applicable to precipitation data. 
+</p>
+<p><strong>variance</strong>
+</p>
+<p>Variance scaling of temperature. This method is described in Chen et al. 2011. It is applicable only to temperature. It corrects
+the mean and variance of temperature time series.
+</p>
+<p><strong>loci</strong>
+</p>
+<p>Local intensity scaling of precipitation. This method is described in Schmidli et al. 2006. It adjust the mean as well as both wet-day frequencies and wet-day intensities.
+The precipitation threshold is calculated such that the number of simulated days exceeding this threshold matches the number of observed days with precipitation larger than 1 mm.
+</p>
+<p><strong>ptr</strong>
+</p>
+<p>Power transformation of precipitation. This method is described in Leander and Buishand 2007 and is applicable only to precipitation. It adjusts the variance statistics of precipitation
+time series in an exponential form. The power parameter is estimated on a monthly basis using a 90-day window centered on the interval. The power is defined by matching the coefficient
+of variation of corrected daily simulated precipitation with the coefficient of variation of observed daily precipitation. It is calculated by root-finding algorithm using Brent's method.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A calibrated grid of the same spatio-temporal extent than the input <code>"y"</code>
+</p>
+
+
+<h3>Note on the bias correction of precipitation</h3>
+
+<p>In the case of precipitation a frequency adaptation has been implemented in all versions of 
+quantile mapping to alleviate the problems arising when the dry day frequency in the raw model output is larger
+than in the observations (Wilcke et al. 2013). 
+</p>
+<p>The precipitation subroutines are switched-on when the variable name of the grid 
+(i.e., the value returned by <code>gridData$Variable$varName</code>) is one of the following: 
+<code>"pr"</code>, <code>"tp"</code> (this is the standard name defined in the vocabulary (<code><a href="../../loadeR/html/C4R.vocabulary.html">C4R.vocabulary</a></code>), <code>"precipitation"</code> or <code>"precip"</code>.
+Thus, caution must be taken to ensure that the correct bias correction is being undertaken when dealing with
+non-standard variables.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>S. Herrera, M. Iturbide, J. Bedia
+</p>
+
+
+<h3>References</h3>
+
+
+<ul>
+<li><p> R.A.I. Wilcke, T. Mendlik and A. Gobiet (2013) Multi-variable error correction of regional climate models. Climatic Change, 120, 871-887
+</p>
+</li>
+<li><p> A. Amengual, V. Homar, R. Romero, S. Alonso, and C. Ramis (2012) A Statistical Adjustment of Regional Climate Model Outputs to Local Scales: Application to Platja de Palma, Spain. J. Clim., 25, 939-957
+</p>
+</li>
+<li><p> C. Piani, J. O. Haerter and E. Coppola (2009) Statistical bias correction for daily precipitation in regional climate models over Europe, Theoretical and Applied Climatology, 99, 187-192
+</p>
+</li>
+<li><p> O. Gutjahr and G. Heinemann (2013) Comparing precipitation bias correction methods for high-resolution regional climate simulations using COSMO-CLM, Theoretical and Applied Climatology, 114, 511-529
+</p>
+</li>
+<li><p> M. R. Tye, D. B. Stephenson, G. J. Holland and R. W. Katz (2014) A Weibull Approach for Improving Climate Model Projections of Tropical Cyclone Wind-Speed Distributions, Journal of Climate, 27, 6119-6133
+</p>
+</li></ul>
+
+
+
+<h3>See Also</h3>
+
+<p><code><a href="isimip.html">isimip</a></code> for a trend-preserving method of model calibration and <code><a href="quickDiagnostics.html">quickDiagnostics</a></code> 
+for an outlook of the results.
+</p>
+<p>Other downscaling: <code><a href="glimpr.html">glimpr</a></code>,
+<code><a href="isimip.html">isimip</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+{
+data("EOBS_Iberia_pr")
+data("CORDEX_Iberia_pr")
+y &lt;- EOBS_Iberia_pr
+x &lt;- CORDEX_Iberia_pr
+
+# empirical
+eqm1 &lt;- biasCorrection(y = y, x = x,
+                       precipitation = TRUE,
+                       method = "eqm",
+                       window = NULL,
+                       wet.threshold = 0.1)
+eqm1win &lt;- biasCorrection(y = y, x = x,
+                          precipitation = TRUE,
+                          method = "eqm",
+                          extrapolation = "none",
+                          window = c(30, 15),
+                          wet.threshold = 0.1)
+eqm1folds &lt;- biasCorrection(y = y, x = x,
+                            precipitation = TRUE,
+                            method = "eqm",
+                            window = c(30, 15),
+                            wet.threshold = 0.1,
+                            cross.val = "kfold",
+                            folds = list(1983:1989, 1990:1996, 1997:2002))
+
+quickDiagnostics(y, x, eqm1, location = c(-2, 43))
+quickDiagnostics(y, x, eqm1, location = c(-2, 43))
+quickDiagnostics(y, x, eqm1win, location = c(-2, 43))
+quickDiagnostics(y, x, eqm1folds, location = c(-2, 43))
+
+#parametric
+pqm1.gamm &lt;- biasCorrection(y = y, x = x,
+                       method = "pqm",
+                       precipitation = TRUE,
+                       fitdistr.args = list(densfun = "gamma"))
+quickDiagnostics(y, x, pqm1.gamm, location = c(-2, 43))
+pqm1.wei &lt;- biasCorrection(y = y, x = x,
+                       method = "pqm",
+                       precipitation = TRUE,
+                       fitdistr.args = list(densfun = "weibull"))
+quickDiagnostics(y, x, pqm1.wei, location = c(-2, 43))
+
+data("EOBS_Iberia_tas")
+data("CORDEX_Iberia_tas")
+y &lt;- EOBS_Iberia_tas
+x &lt;- CORDEX_Iberia_tas
+pqm1.norm &lt;- biasCorrection(y = y, x = x,
+           method = "pqm",
+           fitdistr.args = list(densfun = "normal"))
+quickDiagnostics(y, x, pqm1.norm, location = c(-2, 43))
+
+# correction of future climate change data
+data("CORDEX_Iberia_tas.rcp85")
+newdata &lt;- CORDEX_Iberia_tas.rcp85
+eqm1win &lt;- biasCorrection(y = y, x = x,
+                          newdata = newdata,
+                          precipitation = TRUE,
+                          method = "eqm",
+                          extrapolation = "constant",
+                          window = c(30, 15),
+                          wet.threshold = 0.1)
+quickDiagnostics(y, x, eqm1win, location = c(-2, 43))
+pqm1.norm &lt;- biasCorrection(y = y, x = x,
+                       newdata = newdata,
+                       method = "pqm",
+                       fitdistr.args = list(densfun = "normal"))
+quickDiagnostics(y, x, pqm1.norm, location = c(-2, 43))
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>downscaleR</em> version 3.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

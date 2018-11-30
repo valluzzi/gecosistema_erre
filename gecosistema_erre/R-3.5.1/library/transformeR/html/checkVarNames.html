@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Variable name check</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for checkVarNames {transformeR}"><tr><td>checkVarNames {transformeR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Variable name check</h2>
+
+<h3>Description</h3>
+
+<p>Check the consistency of variable (short)names across grids/multigrids
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+checkVarNames(..., check.order = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Input grids to be compared</p>
+</td></tr>
+<tr valign="top"><td><code>check.order</code></td>
+<td>
+<p>Check if the order is consistent across input grids. This is the default. When set to
+<code>TRUE</code>, the function does not only check that the variable names match, but also that their order is the same
+(in case of multigrids)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>In case of inconsistency of any of the inputs grids, the function stops the execution 
+of the current expression, with an error message.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J Bedia
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getVarNames.html">getVarNames</a></code>
+</p>
+<p>Other check.helpers: <code><a href="checkDim.html">checkDim</a></code>,
+<code><a href="checkSeason.html">checkSeason</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
+#' # Testing grids that contain different variables:
+
+try(checkVarNames(NCEP_Iberia_hus850, NCEP_Iberia_psl))
+
+# Testing multigrid contents:
+mg &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
+mg1 &lt;- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_ta850, NCEP_Iberia_psl)
+mg2 &lt;- makeMultiGrid(NCEP_Iberia_ta850, NCEP_Iberia_psl, NCEP_Iberia_hus850)
+# The input grids contains the same variables, but their ordering is different:
+checkVarNames(mg, mg1, mg2, check.order = FALSE) # OK
+# If we do check.order = TRUE (the default), it gives an error:
+
+try(checkVarNames(mg, mg1, mg2, check.order = TRUE)) # Error
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>transformeR</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>
