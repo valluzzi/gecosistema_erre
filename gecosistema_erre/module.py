@@ -69,6 +69,9 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", R_LIBS_USER="",  verbose
             stdoutdata = stdoutdata.decode("utf-8").strip("\r\n")
             #split output
             stdoutdata = stdoutdata.split("\r\n")
+            if verbose:
+                for line in stdoutdata:
+                    print(line)
             #takes last line
             data = stdoutdata[-1]
             #remove index of line
