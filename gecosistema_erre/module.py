@@ -45,6 +45,10 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", R_LIBS_USER="",  verbose
     environ['R_HOME'] = R_HOME if R_HOME else environ['R_HOME']
     environ['R_LIBS_USER'] = R_LIBS_USER if R_LIBS_USER else environ['R_LIBS_USER']
 
+    if verbose:
+        print("R_HOME=%s"%environ['R_HOME'] )
+        print("R_LIBS_USER=%s" % environ['R_LIBS_USER'])
+
     #add the environ
     for key in env:
         env[key]="%s"%env[key]
