@@ -27,7 +27,7 @@ import subprocess
 import re,ast
 
 
-def Rscript(command, env={}, envAsArgs=True, R_HOME="", additional_lib="",  verbose=False):
+def Rscript(command, env={}, envAsArgs=True, R_HOME="", R_LIBS_USER="",  verbose=False):
     """
     Rscript -  call  rscript interpreter
             -  we need to retun a JSON string from R script in the stdout
@@ -37,7 +37,7 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", additional_lib="",  verb
     command = """Rscript --vanilla "%s" """ % (command)
     environ = os.environ
     environ['R_HOME'] = R_HOME if R_HOME else environ['R_HOME']
-    environ['R_LIBS_USER'] = additional_lib
+    environ['R_LIBS_USER'] = R_LIBS_USER if R_LIBS_USER else environ['R_LIBS_USER']
 
     #add the environ
     for key in env:
