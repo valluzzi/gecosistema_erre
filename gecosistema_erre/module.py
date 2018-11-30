@@ -22,9 +22,64 @@
 #
 # Created:
 #-------------------------------------------------------------------------------
+import sys,os
+import subprocess
+import re,ast
 
-def main():
-    pass
+
+def Rscript(command, env={}, envAsArgs=True, R_HOME="", additional_lib="",  verbose=False):
+    """
+    Rscript -  call  rscript interpreter
+            -  we need to retun a JSON string from R script in the stdout
+            -  (es: print {"success":"true","data":5}  )
+    """
+
+    command = """Rscript --vanilla %s""" % (command)
+    environ = os.environ
+    environ['R_HOME'] = R_HOME if R_HOME else environ['R_HOME']
+    environ['R_LIBS_USER'] = additional_lib
+
+    #add the environ
+    for key in env:
+        env[key]="%s"%env[key]
+
+    #add the enviton to the command line
+    if envAsArgs:
+        for key in env:
+            command += ' "%s"'%(env[key])
+    else:
+        #put the environ in the os.environ
+        environ.update(env)
+
+    #debug
+    if verbose:
+        print(command)
+
+    try:
+        with open(os.devnull, 'w') as devnull:
+            #outdata = subprocess.check_output(command, stderr=devnull).decode('utf-8')
+            p = subprocess.Popen(command, env=environ, stdout=subprocess.PIPE)
+            stdoutdata, stderrdata = p.communicate()
+            stdoutdata = stdoutdata.decode("utf-8").strip("\r\n")
+            #split output
+            stdoutdata = stdoutdata.split("\r\n")
+            #takes last line
+            data = stdoutdata[-1]
+            #remove index of line
+            data = re.sub(r'^\[\d+\]\s*','',data)
+            #parse into json
+            data = ast.literal_eval(data)
+            return {"succes":True,"data":data}
+
+    except subprocess.CalledProcessError as e:
+        return {"success": False, "exception": "%s"% e.output, "returncode": e.returncode}
+
 
 if __name__ == '__main__':
-    main()
+    print(os.getcwd())
+    R_HOME = "c:/Program Files/R/R-3.5.1/bin"
+
+    env={"zzz":0,"hello":1,"world":2,"AAA":3}
+    res =Rscript("test.R",env,verbose=False)
+    print(res)
+    #print(type(res))
