@@ -34,7 +34,7 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", additional_lib="",  verb
             -  (es: print {"success":"true","data":5}  )
     """
 
-    command = """Rscript --vanilla %s""" % (command)
+    command = """Rscript --vanilla "%s" """ % (command)
     environ = os.environ
     environ['R_HOME'] = R_HOME if R_HOME else environ['R_HOME']
     environ['R_LIBS_USER'] = additional_lib
@@ -68,7 +68,10 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", additional_lib="",  verb
             #remove index of line
             data = re.sub(r'^\[\d+\]\s*','',data)
             #parse into json
-            data = ast.literal_eval(data)
+            if data!="":
+                data = ast.literal_eval(data)
+            else:
+                data = ""
             return {"succes":True,"data":data}
 
     except subprocess.CalledProcessError as e:
@@ -77,9 +80,12 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", additional_lib="",  verb
 
 if __name__ == '__main__':
     print(os.getcwd())
-    R_HOME = "c:/Program Files/R/R-3.5.1/bin"
+    R_HOME = "d:\\Program Files\\R\\R-3.3.2\\bin"
 
-    env={"zzz":0,"hello":1,"world":2,"AAA":3}
-    res =Rscript("test.R",env,verbose=False)
+    env={"date":"2015-06-01","tagname":"Tmed1"}
+
+    scriptname = "D:\\Program Files (x86)\\SICURA\\apps\\iasmhyn\\lib\\R\\LST_krige.r"
+    #scriptname= "test.R"
+    res =Rscript(scriptname,env,verbose=True)
     print(res)
     #print(type(res))
