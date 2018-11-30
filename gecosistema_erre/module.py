@@ -27,7 +27,7 @@ import subprocess
 import re,ast
 
 
-def Rscript(command, env={}, envAsArgs=True, R_HOME="", R_LIBS_USER="",  verbose=False):
+def Rscript(command, env={}, envAsArgs=True, R_HOME="", verbose=False):
     """
     Rscript -  call  rscript interpreter
             -  we need to retun a JSON string from R script in the stdout
@@ -36,19 +36,9 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", R_LIBS_USER="",  verbose
 
     command = """Rscript --vanilla --verbose "%s" """ % (command)
     environ = os.environ
-    if not "R_HOME" in environ:
-        environ['R_HOME'] = ""
 
-    if not "R_LIBS_USER" in environ:
-        environ['R_LIBS_USER'] = ""
-
-    environ['R_HOME'] = R_HOME if R_HOME else environ['R_HOME']
-    environ['R_LIBS_USER'] = R_LIBS_USER if R_LIBS_USER else environ['R_LIBS_USER']
-
-    command = environ['R_HOME']+"/"+command
-    if verbose:
-        print("R_HOME=%s"%environ['R_HOME'] )
-        print("R_LIBS_USER=%s" % environ['R_LIBS_USER'])
+    if R_HOME:
+        command = R_HOME+"/"+command
 
     #add the environ
     for key in env:
