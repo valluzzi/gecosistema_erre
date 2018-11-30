@@ -36,6 +36,12 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", R_LIBS_USER="",  verbose
 
     command = """Rscript --vanilla "%s" """ % (command)
     environ = os.environ
+    if not "R_HOME" in environ:
+        environ['R_HOME'] = ""
+
+    if not "R_LIBS_USER" in environ:
+        environ['R_LIBS_USER'] =""
+
     environ['R_HOME'] = R_HOME if R_HOME else environ['R_HOME']
     environ['R_LIBS_USER'] = R_LIBS_USER if R_LIBS_USER else environ['R_LIBS_USER']
 
