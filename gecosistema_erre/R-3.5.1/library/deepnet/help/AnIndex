@@ -1,9 +1,0 @@
-dbn.dnn.train	dbn.dnn.train
-load.mnist	load.mnist
-nn.predict	nn.predict
-nn.test	nn.test
-nn.train	nn.train
-rbm.down	rbm.down
-rbm.train	rbm.train
-rbm.up	rbm.up
-sae.dnn.train	sae.dnn.train
