@@ -37,13 +37,13 @@
         <counts>
           <entry key="R" value="179" />
           <entry key="dummy" value="7" />
-          <entry key="py" value="2400" />
+          <entry key="py" value="2412" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="36" />
-          <entry key="Python" value="2400" />
+          <entry key="Python" value="2412" />
           <entry key="R" value="150" />
         </counts>
       </usages-collector>
@@ -54,8 +54,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/gecosistema_erre/rscript.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="22" />
+            <state relative-caret-position="506">
+              <caret line="52" column="21" selection-start-line="52" selection-start-column="21" selection-end-line="52" selection-end-column="21" />
               <folding>
                 <element signature="e#926#939#0" expanded="true" />
               </folding>
@@ -237,8 +237,8 @@
     <entry file="file://$PROJECT_DIR$/gecosistema_erre/krige.py" />
     <entry file="file://$PROJECT_DIR$/gecosistema_erre/rscript.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="22" />
+        <state relative-caret-position="506">
+          <caret line="52" column="21" selection-start-line="52" selection-start-column="21" selection-end-line="52" selection-end-column="21" />
           <folding>
             <element signature="e#926#939#0" expanded="true" />
           </folding>
