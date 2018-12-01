@@ -43,8 +43,9 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", verbose=False):
         command = R_HOME+"/"+command
 
     #add the environ
+    ENV = {}
     for key in env:
-        env[key.upper()]= "%s"%env[key]
+        ENV[key.upper()]= "%s"%env[key]
 
     #add the enviton to the command line
     if envAsArgs:
@@ -52,7 +53,7 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", verbose=False):
             command += ' "%s"'%(env[key])
     else:
         #put the environ in the os.environ
-        environ.update(env)
+        environ.update(ENV)
 
     #debug
     if verbose:
