@@ -37,7 +37,9 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", verbose=False):
     command = """Rscript --vanilla --verbose "%s" """ % (command)
     environ = os.environ
 
-    if R_HOME:
+    if environ["R_HOME"]:
+        command = environ["R_HOME"] + "/" + command
+    elif R_HOME:
         command = R_HOME+"/"+command
 
     #add the environ

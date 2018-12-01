@@ -1,1 +1,1 @@
-from module import *
+from rscript import *
