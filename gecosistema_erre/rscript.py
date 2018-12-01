@@ -52,7 +52,7 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", verbose=False):
         for key in env:
             command += ' "%s"'%(env[key])
     else:
-        for key in env:
+        for key in ENV:
             command += ' "%s"'%(ENV[key])
         #put the environ in the os.environ
         environ.update(ENV)
