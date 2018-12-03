@@ -34,13 +34,16 @@ def Rscript(command, env={}, envAsArgs=True, R_HOME="", verbose=False):
             -  (es: print {"success":"true","data":5}  )
     """
 
-    command = """Rscript --vanilla --verbose "%s" """ % (command)
+    Rscript = "RScript"
+
     environ = os.environ
 
     if environ["R_HOME"]:
-        command = environ["R_HOME"] + "/" + command
+        Rscript = '"'+ environ["R_HOME"] + '/RScript"'
     elif R_HOME:
-        command = R_HOME+"/"+command
+        Rscript = '"'+  R_HOME + '/RScript"'
+
+    command = """%s --vanilla --verbose "%s" """ % (Rscript, command)
 
     #add the environ
     ENV = {}
